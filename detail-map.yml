@@ -1,0 +1,9 @@
+plugin:
+  name: easydb-detail-map-plugin
+  version: 1.0
+  server:
+    api-version:
+      require: 1
+  webfrontend:
+    url: detail-map.js
+    l10n: l10n/
