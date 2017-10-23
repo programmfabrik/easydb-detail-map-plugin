@@ -7,7 +7,8 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		"detail_sidebar_show_map"
 
 	isAvailable: ->
-		true
+		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
+		return assets and assets.length > 0
 
 	isDisabled: ->
 		markersOptions = @__getMarkerOptions()
@@ -16,37 +17,67 @@ class MapDetailPlugin extends DetailSidebarPlugin
 	hideDetail: ->
 		@_detailSidebar.mainPane.empty("top")
 
-	showDetail: ->
+	renderObject: ->
+		if @__map
+			@__map.destroy()
 		markersOptions = @__getMarkerOptions()
 		if markersOptions.length == 0
 			return
 
-		@__map = new CUI.LeafletMap(clickable: false, center: markersOptions[0].position, markersOptions: markersOptions)
-		@_detailSidebar.mainPane.replace(@__map, "top")
+		@__map = new CUI.LeafletMap(
+			class: "ez5-map-detail-plugin"
+			clickable: false,
+			markersOptions: markersOptions,
+			zoomToFitAllMarkersOnInit: true,
+			zoomControl: false)
+		@__zoomButtonbar = @__buildZoomButtonbar()
 
-	__getMarkerOptions: () ->
+	showDetail: ->
+		if not @__map
+			return
+		@_detailSidebar.mainPane.replace([@__zoomButtonbar, @__map], "top")
+
+	__getMarkerOptions: ->
 		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
 
 		markersOptions = []
 		for asset in assets
-			iconSize = ez5.fitRectangle(asset.value.versions.small.width, asset.value.versions.small.height, 30, 30)
 			gps_location = asset.value.technical_metadata.gps_location
 			if gps_location and gps_location.latitude and gps_location.longitude
 				do(asset) =>
-					markersOptions.push(
+					options =
 						position:
 							lat: gps_location.latitude,
 							lng: gps_location.longitude
-						icon: L.icon(iconUrl: asset.value.versions.small.url, iconSize: iconSize)
 						cui_onClick: =>
 							CUI.Events.trigger
 								node: @_detailSidebar.container
 								type: "asset-browser-show-asset"
 								info:
 									value: asset.value
-				)
+
+					if asset.value.versions.small
+						iconSize = ez5.fitRectangle(asset.value.versions.small.width, asset.value.versions.small.height, 30, 30)
+						options.icon = L.icon(iconUrl: asset.value.versions.small.url, iconSize: iconSize)
+
+					markersOptions.push(options)
 
 		markersOptions
+
+	__buildZoomButtonbar: ->
+		new CUI.Buttonbar
+			class: "cui-leaflet-map-zoom-buttons"
+			buttons: [
+				icon: "plus"
+				group: "zoom"
+				onClick: =>
+					@__map.zoomIn()
+			,
+				icon: "minus"
+				group: "zoom"
+				onClick: =>
+					@__map.zoomOut()
+			]
 
 ez5.session_ready =>
 	DetailSidebar.plugins.registerPlugin(MapDetailPlugin)
