@@ -7,6 +7,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		"detail_sidebar_show_map"
 
 	isAvailable: ->
+		if not @__getConfiguration().enabled
+			return false
+
 		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
 		return assets and assets.length > 0
 
@@ -78,6 +81,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				onClick: =>
 					@__map.zoomOut()
 			]
+
+	__getConfiguration: ->
+		ez5.session.getBaseConfig().system["detail_map"] or {}
 
 ez5.session_ready =>
 	DetailSidebar.plugins.registerPlugin(MapDetailPlugin)

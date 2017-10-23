@@ -2,3 +2,6 @@ key,de-DE,en-US,it-IT,es-ES
 map.detail.plugin.button|icon,fa-map-o,fa-map-o,fa-map-o,fa-map-o
 map.detail.plugin.zoom.plus.button|icon,plus,plus,plus,plus
 map.detail.plugin.zoom.minus.button|icon,minus,minus,minus,minus
+server.config.name.system.detail_map,Map,Map,Map,Mapa
+server.config.parameter.system.detail_map.enabled.label,Show map in details,Show map in details,Show map in details,Mostrar mapa en el detalle
+server.config.parameter.system.detail_map.enabled.checkbox,Enabled,Enabled,Enabled,Habilitado

@@ -7,3 +7,11 @@ plugin:
   webfrontend:
     url: detail-map.js
     l10n: l10n/
+
+base_config:
+  - name: detail_map
+    group: css
+    parameters:
+      enabled:
+        name: enabled
+        type: bool
