@@ -1,2 +1,4 @@
 key,de-DE,en-US,it-IT,es-ES
-map.detail.plugin.button|icon,fa-map-o,fa-map-o,,
+map.detail.plugin.button|icon,fa-map-o,fa-map-o,fa-map-o,fa-map-o
+map.detail.plugin.zoom.plus.button|icon,plus,plus,plus,plus
+map.detail.plugin.zoom.minus.button|icon,minus,minus,minus,minus

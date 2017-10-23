@@ -68,12 +68,12 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		new CUI.Buttonbar
 			class: "cui-leaflet-map-zoom-buttons"
 			buttons: [
-				icon: "plus"
+				loca_key: "map.detail.plugin.zoom.plus.button"
 				group: "zoom"
 				onClick: =>
 					@__map.zoomIn()
 			,
-				icon: "minus"
+				loca_key: "map.detail.plugin.zoom.minus.button"
 				group: "zoom"
 				onClick: =>
 					@__map.zoomOut()
