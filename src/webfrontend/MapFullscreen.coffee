@@ -21,10 +21,13 @@ class MapFullscreen extends CUI.DOMElement
 			loca_key: "map.detail.plugin.fullscreen.close.button"
 			group: "fullscreen"
 			onClick: =>
-				@_onClose?()
-				@destroy()
+				@close()
 		)
 
 		CUI.dom.append(@DOM, [buttonbar, @_map])
 		document.body.appendChild(@DOM)
 		@_map.resize()
+
+	close: ->
+		@_onClose?()
+		@destroy()

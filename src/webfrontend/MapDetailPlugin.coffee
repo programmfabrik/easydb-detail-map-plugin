@@ -44,7 +44,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				@__mapFullscreen = new MapFullscreen(
 					map: @__map
 					zoomButtons: zoomButtons
-					onClose: => @showDetail()
+					onClose: =>
+						@showDetail()
+						@__map.resize()
 				)
 				@__mapFullscreen.render()
 		)
@@ -53,7 +55,6 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		if not @__map
 			return
 		@_detailSidebar.mainPane.replace([@__zoomButtonbar, @__map], "top")
-		@__map.resize()
 
 	__getMarkerOptions: ->
 		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
@@ -68,6 +69,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 							lat: gps_location.latitude,
 							lng: gps_location.longitude
 						cui_onClick: =>
+							@__mapFullscreen?.close()
 							CUI.Events.trigger
 								node: @_detailSidebar.container
 								type: "asset-browser-show-asset"
