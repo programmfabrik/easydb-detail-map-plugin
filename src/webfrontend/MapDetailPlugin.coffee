@@ -75,24 +75,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 									value: asset.value
 
 					if asset.value.versions.small
-						width = 64
-						height = (width * asset.value.versions.small.height) / asset.value.versions.small.width
-						padding = 3 # from css
-						pointerHeight = 7 # from css
-
-						# dx and dy are the top left offset of the pointer end
-						dx = Math.floor((width + 2*padding)/2)
-						dy = Math.ceil((height + 2*padding + markerHeight)/2)
-
-						options.icon = L.divIcon(
-							html: """
-										<div class="ez5-map-marker">
-										  <img class="ez5-map-marker-image" src="#{ asset.value.versions.small.url }" style="width: #{ width }px">
-										  <div class="ez5-map-marker-pointer"></div>
-										</div>
-										"""
-							iconAnchor: [dx, dy]
-						)
+						options.icon = @__getDivIcon(asset.value.versions.small)
 
 					markersOptions.push(options)
 
@@ -115,6 +98,28 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			onClick: =>
 				@__map.zoomOut()
 		]
+
+	__getDivIcon: (image) ->
+		[width, height] = ez5.fitRectangle(image.width, image.height, 64, 64)
+		padding = 3 # from css
+		pointerHeight = 7 # from css
+
+		iconWidth = width + 2 * padding
+		iconHeight = Math.round(height + 2 * padding + pointerHeight)
+
+		# dx and dy are the top left offset of the pointer end
+		iconAnchorOffsetX = Math.floor(iconWidth / 2)
+
+		divIcon = L.divIcon(
+			html: """<div class="ez5-map-marker">
+									<img class="ez5-map-marker-image" src="#{ image.url }" style="width: #{ width }px; height: #{ height }px">
+							 		<div class="ez5-map-marker-pointer"></div>
+							 </div>
+						"""
+			iconAnchor: [iconAnchorOffsetX, iconHeight]
+			iconSize: [iconWidth, iconHeight]
+		)
+		return divIcon
 
 	__getConfiguration: ->
 		ez5.session.getBaseConfig().system["detail_map"] or {}
