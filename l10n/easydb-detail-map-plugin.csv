@@ -1,15 +1,15 @@
 key,de-DE,en-US,it-IT,es-ES
 map.detail.plugin.button|icon,fa-map-o,fa-map-o,fa-map-o,fa-map-o
 map.detail.plugin.zoom.plus.button|icon,zoom_in,zoom_in,zoom_in,zoom_in
-map.detail.plugin.zoom.plus.button|tooltip,Zoom in,Zoom in,Zoom in,Zoom in
+map.detail.plugin.zoom.plus.button|tooltip,In Karte hinein zoomen.,Zoom in,,
 map.detail.plugin.zoom.minus.button|icon,zoom_out,zoom_out,zoom_out,zoom_out
-map.detail.plugin.zoom.minus.button|tooltip,Zoom out,Zoom out,Zoom out,Zoom out
-map.detail.plugin.fullscreen.close.button|icon,resize_small,resize_small,resize_small,resize_small
-map.detail.plugin.fullscreen.close.button|tooltip,Open fullscreen,Open fullscreen,Open fullscreen,Open fullscreen
-map.detail.plugin.fullscreen.open.button|icon,resize_full,resize_full,resize_full,resize_full
-map.detail.plugin.fullscreen.open.button|tooltip,Close fullscreen,Close fullscreen,Close fullscreen,Close fullscreen
+map.detail.plugin.zoom.minus.button|tooltip,Aus Karte heraus zoomen.,Zoom out,,
+map.detail.plugin.fullscreen.close.button|icon,close,close,close,close
+map.detail.plugin.fullscreen.close.button|tooltip,Vollbildansicht schließen,Close fullscreen,,
+map.detail.plugin.fullscreen.open.button|icon,fa-arrows-alt,fa-arrows-alt,fa-arrows-alt,fa-arrows-alt
+map.detail.plugin.fullscreen.open.button|tooltip,Vollbildansicht öffnen,Open fullscreen,,
 map.detail.plugin.zoom.reset.button|icon,fa-dot-circle-o,fa-dot-circle-o,fa-dot-circle-o,fa-dot-circle-o
-map.detail.plugin.zoom.reset.button|tooltip,Reset,Reset,Reset,Reset
-server.config.name.system.detail_map,Map,Map,Map,Mapa
-server.config.parameter.system.detail_map.enabled.label,Show map in details,Show map in details,Show map in details,Mostrar mapa en el detalle
-server.config.parameter.system.detail_map.enabled.checkbox,Enabled,Enabled,Enabled,Habilitado
+map.detail.plugin.zoom.reset.button|tooltip,Zoomlevel zurücksetzen,Reset,,
+server.config.name.system.detail_map,Karten-Einstellungen,Map settings,,Mapa
+server.config.parameter.system.detail_map.enabled.label,Karte im Detail anzeigen,Show map in details,,Mostrar mapa en el detalle
+server.config.parameter.system.detail_map.enabled.checkbox,Aktiviert,Enabled,,Habilitado
