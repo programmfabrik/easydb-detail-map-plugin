@@ -1,0 +1,30 @@
+.ez5-detail-map-plugin-fullscreen {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ez5-detail-map-plugin-zoom-buttons {
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+  display: block;
+  margin-top: 10px;
+
+  .cui-buttonbar-group:first-child {
+    position: absolute;
+    margin-left: 10px;
+  }
+
+  .cui-buttonbar-group:last-child {
+    position: absolute;
+    right: 10px;
+  }
+}
+
+.ez5-detail-map-plugin {
+  height: 100%
+}

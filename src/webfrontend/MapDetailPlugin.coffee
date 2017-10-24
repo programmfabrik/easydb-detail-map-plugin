@@ -23,22 +23,37 @@ class MapDetailPlugin extends DetailSidebarPlugin
 	renderObject: ->
 		if @__map
 			@__map.destroy()
+			@__mapFullscreen?.destroy()
 		markersOptions = @__getMarkerOptions()
 		if markersOptions.length == 0
 			return
 
-		@__map = new CUI.LeafletMap(
-			class: "ez5-map-detail-plugin"
+		@__map = new CUI.LeafletMap
+			class: "ez5-detail-map-plugin"
 			clickable: false,
 			markersOptions: markersOptions,
 			zoomToFitAllMarkersOnInit: true,
-			zoomControl: false)
-		@__zoomButtonbar = @__buildZoomButtonbar()
+			zoomControl: false
+
+		zoomButtons = @__getZoomButtons()
+		@__zoomButtonbar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: zoomButtons)
+		@__zoomButtonbar.addButton(
+			loca_key: "map.detail.plugin.fullscreen.open.button"
+			group: "fullscreen"
+			onClick: =>
+				@__mapFullscreen = new MapFullscreen(
+					map: @__map
+					zoomButtons: zoomButtons
+					onClose: => @showDetail()
+				)
+				@__mapFullscreen.render()
+		)
 
 	showDetail: ->
 		if not @__map
 			return
 		@_detailSidebar.mainPane.replace([@__zoomButtonbar, @__map], "top")
+		@__map.resize()
 
 	__getMarkerOptions: ->
 		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
@@ -67,20 +82,23 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 		markersOptions
 
-	__buildZoomButtonbar: ->
-		new CUI.Buttonbar
-			class: "cui-leaflet-map-zoom-buttons"
-			buttons: [
-				loca_key: "map.detail.plugin.zoom.plus.button"
-				group: "zoom"
-				onClick: =>
-					@__map.zoomIn()
-			,
-				loca_key: "map.detail.plugin.zoom.minus.button"
-				group: "zoom"
-				onClick: =>
-					@__map.zoomOut()
-			]
+	__getZoomButtons: ->
+		[
+			loca_key: "map.detail.plugin.zoom.plus.button"
+			group: "zoom"
+			onClick: =>
+				@__map.zoomIn()
+		,
+			loca_key: "map.detail.plugin.zoom.reset.button"
+			group: "zoom"
+			onClick: =>
+				@__map.zoomToFitAllMarkers()
+		,
+			loca_key: "map.detail.plugin.zoom.minus.button"
+			group: "zoom"
+			onClick: =>
+				@__map.zoomOut()
+		]
 
 	__getConfiguration: ->
 		ez5.session.getBaseConfig().system["detail_map"] or {}

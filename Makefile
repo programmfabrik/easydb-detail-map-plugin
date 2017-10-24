@@ -12,17 +12,22 @@ INSTALL_FILES = \
 	$(WEB)/l10n/es-ES.json \
 	$(WEB)/l10n/it-IT.json \
 	$(JS) \
+	$(CSS) \
 	detail-map.config.yml
 
-COFFEE_FILES = src/webfrontend/MapDetailPlugin.coffee
+COFFEE_FILES = \
+    src/webfrontend/MapDetailPlugin.coffee \
+    src/webfrontend/MapFullscreen.coffee
+
+SCSS_FILES = src/webfrontend/scss/main.scss
 
 all: build
 
 include easydb-library/tools/base-plugins.make
 
-build: code $(L10N)
+build: code $(SCSS)
 
-code: $(JS)
+code: $(JS) $(L10N)
 
 clean: clean-base
 

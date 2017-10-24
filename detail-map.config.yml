@@ -4,6 +4,9 @@ plugin:
   server:
     api-version:
       require: 1
+  scss:
+    body:
+      - build/webfrontend/easydb-detail-map-plugin.scss
   webfrontend:
     url: easydb-detail-map-plugin.js
     l10n: l10n/
