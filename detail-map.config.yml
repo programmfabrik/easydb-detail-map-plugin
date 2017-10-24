@@ -5,7 +5,7 @@ plugin:
     api-version:
       require: 1
   webfrontend:
-    url: detail-map.js
+    url: easydb-detail-map-plugin.js
     l10n: l10n/
 
 base_config:
