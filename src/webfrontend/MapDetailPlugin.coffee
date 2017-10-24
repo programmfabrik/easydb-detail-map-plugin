@@ -75,8 +75,24 @@ class MapDetailPlugin extends DetailSidebarPlugin
 									value: asset.value
 
 					if asset.value.versions.small
-						iconSize = ez5.fitRectangle(asset.value.versions.small.width, asset.value.versions.small.height, 30, 30)
-						options.icon = L.icon(iconUrl: asset.value.versions.small.url, iconSize: iconSize)
+						width = 64
+						height = (width * asset.value.versions.small.height) / asset.value.versions.small.width
+						padding = 3 # from css
+						pointerHeight = 7 # from css
+
+						# dx and dy are the top left offset of the pointer end
+						dx = Math.floor((width + 2*padding)/2)
+						dy = Math.ceil((height + 2*padding + markerHeight)/2)
+
+						options.icon = L.divIcon(
+							html: """
+										<div class="ez5-map-marker">
+										  <img class="ez5-map-marker-image" src="#{ asset.value.versions.small.url }" style="width: #{ width }px">
+										  <div class="ez5-map-marker-pointer"></div>
+										</div>
+										"""
+							iconAnchor: [dx, dy]
+						)
 
 					markersOptions.push(options)
 
