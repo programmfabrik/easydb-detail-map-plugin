@@ -11,7 +11,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			return false
 
 		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
-		return assets and assets.length > 0
+		return assets and assets.length > 0 and @__existsAtLeastOneAssetEnabledByCustomSettings(assets)
 
 	isDisabled: ->
 		markersOptions = @__getMarkerOptions()
@@ -61,6 +61,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 		markersOptions = []
 		for asset in assets
+			if not @__isAssetEnabledByCustomSetting(asset)
+				continue
+
 			gps_location = asset.value.technical_metadata.gps_location
 			if gps_location and gps_location.latitude and gps_location.longitude
 				do(asset) =>
@@ -100,6 +103,15 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			onClick: =>
 				@__map.zoomOut()
 		]
+
+	__existsAtLeastOneAssetEnabledByCustomSettings: (assets) ->
+		for asset in assets
+			if @__isAssetEnabledByCustomSetting(asset)
+				return true
+		return false
+
+	__isAssetEnabledByCustomSetting: (asset) ->
+		return asset.getField().FieldSchema.custom_settings.show_in_map
 
 	__getDivIcon: (image) ->
 		[width, height] = ez5.fitRectangle(image.width, image.height, 64, 64)
