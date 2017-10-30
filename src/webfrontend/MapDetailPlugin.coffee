@@ -131,6 +131,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 							 		<div class="ez5-map-marker-pointer"></div>
 							 </div>
 						"""
+			className: "ez5-leaflet-div-icon"
 			iconAnchor: [iconAnchorOffsetX, iconHeight]
 			iconSize: [iconWidth, iconHeight]
 		)
