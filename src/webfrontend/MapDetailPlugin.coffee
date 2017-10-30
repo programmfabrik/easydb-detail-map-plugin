@@ -111,7 +111,8 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		return false
 
 	__isAssetEnabledByCustomSetting: (asset) ->
-		return asset.getField().FieldSchema.custom_settings.show_in_map
+		showInMapSetting = asset.getField().FieldSchema.custom_settings.show_in_map
+		return CUI.util.isNull(showInMapSetting) or showInMapSetting
 
 	__getDivIcon: (image) ->
 		[width, height] = ez5.fitRectangle(image.width, image.height, 64, 64)
