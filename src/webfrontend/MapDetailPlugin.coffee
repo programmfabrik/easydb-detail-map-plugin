@@ -2,6 +2,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 	@bigIconSize: 512
 	@smallIconSize: 64
+	@maxZoom: 18
+
+	CUI.LeafletMap.defaults.tileLayerOptions.maxZoom = MapDetailPlugin.maxZoom
 
 	getButtonLocaKey: ->
 		"map.detail.plugin.button"
@@ -154,11 +157,15 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			@__setIconToMarker(marker, MapDetailPlugin.bigIconSize)
 			@__markerSelected = marker
 		else
-			CUI.Events.trigger
-				node: @_detailSidebar.container
-				type: "asset-browser-show-asset"
-				info:
-					value: marker.options.asset.value
+			if @__map.getZoom() == MapDetailPlugin.maxZoom
+				CUI.Events.trigger
+					node: @_detailSidebar.container
+					type: "asset-browser-show-asset"
+					info:
+						value: marker.options.asset.value
+			else
+				@__map.setZoom(MapDetailPlugin.maxZoom)
+				@__map.setCenter(marker.getLatLng())
 
 	__onCloseFullscreen: ->
 		if @__markerSelected
