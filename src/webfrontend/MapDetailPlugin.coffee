@@ -3,6 +3,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 	@bigIconSize: 512
 	@smallIconSize: 64
 	@maxZoom: 18
+	@minZoom: 0
 
 	CUI.LeafletMap.defaults.tileLayerOptions.maxZoom = MapDetailPlugin.maxZoom
 
@@ -13,7 +14,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		"detail_sidebar_show_map"
 
 	isAvailable: ->
-		if not @__getConfiguration().enabled
+		if not MapDetailPlugin.getConfiguration().enabled
 			return false
 
 		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
@@ -43,6 +44,8 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			onClick: =>
 				if @__markerSelected
 					@__setIconToMarker(@__markerSelected, MapDetailPlugin.smallIconSize)
+			onZoomEnd: =>
+				@__onZoomEnd()
 
 		CUI.Events.listen
 			type: "viewport-resize"
@@ -50,8 +53,8 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			call: =>
 				@__map.resize()
 
-		zoomButtons = @__getZoomButtons()
-		@__zoomButtonbar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: zoomButtons)
+		@__zoomButtons = @__getZoomButtons()
+		@__zoomButtonbar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: @__zoomButtons)
 		@__zoomButtonbar.addButton(
 			loca_key: "map.detail.plugin.fullscreen.open.button"
 			group: "fullscreen"
@@ -69,6 +72,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 	showDetail: ->
 		if not @__map
 			return
+
 		@_detailSidebar.mainPane.replace([@__zoomButtonbar, @__map], "top")
 
 	__getMarkerOptions: ->
@@ -100,20 +104,22 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 	__getZoomButtons: ->
 		[
-			loca_key: "map.detail.plugin.zoom.plus.button"
-			group: "zoom"
-			onClick: =>
-				@__map.zoomIn()
+			new LocaButton
+				loca_key: "map.detail.plugin.zoom.plus.button"
+				group: "zoom"
+				onClick: =>
+					@__map.zoomIn()
 		,
 			loca_key: "map.detail.plugin.zoom.reset.button"
 			group: "zoom"
 			onClick: =>
 				@__map.zoomToFitAllMarkers()
 		,
-			loca_key: "map.detail.plugin.zoom.minus.button"
-			group: "zoom"
-			onClick: =>
-				@__map.zoomOut()
+			new LocaButton
+				loca_key: "map.detail.plugin.zoom.minus.button"
+				group: "zoom"
+				onClick: =>
+					@__map.zoomOut()
 		]
 
 	__existsAtLeastOneAssetEnabledByCustomSettings: (assets) ->
@@ -164,8 +170,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 					info:
 						value: marker.options.asset.value
 			else
-				@__map.setZoom(MapDetailPlugin.maxZoom)
-				@__map.setCenter(marker.getLatLng())
+				@__map.setCenter(marker.getLatLng(), MapDetailPlugin.maxZoom)
 
 	__onCloseFullscreen: ->
 		if @__markerSelected
@@ -174,12 +179,39 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		@__map.resize()
 		@__fullscreenActive = false
 
+	__onZoomEnd: ->
+		zoomInButton = @__zoomButtons[0]
+		zoomOutButton = @__zoomButtons[2]
+		if @__map.getZoom() == MapDetailPlugin.maxZoom
+			zoomInButton.disable()
+		else
+			zoomInButton.enable()
+
+		if @__map.getZoom() == MapDetailPlugin.minZoom
+			zoomOutButton.disable()
+		else
+			zoomOutButton.enable()
+
 	__setIconToMarker: (marker, size) ->
 		bigIcon = @__getDivIcon(marker.options.asset.value.versions.small, size)
 		marker.setIcon(bigIcon)
 
-	__getConfiguration: ->
+	@getConfiguration: ->
 		ez5.session.getBaseConfig().system["detail_map"] or {}
+
+	@initMapbox: ->
+		mapboxAttribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
+
+		CUI.LeafletMap.defaults.tileLayerOptions.attribution = mapboxAttribution
+		CUI.LeafletMap.defaults.tileLayerOptions.id = ez5.session.getPref("mapboxTilesId")
+		CUI.LeafletMap.defaults.tileLayerOptions.accessToken = MapDetailPlugin.getConfiguration().mapboxToken
+		CUI.LeafletMap.defaults.tileLayerUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
 
 ez5.session_ready =>
 	DetailSidebar.plugins.registerPlugin(MapDetailPlugin)
+
+	if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
+		if not ez5.session.getPref("mapboxTilesId")
+			ez5.session.setPref("mapboxTilesId", "mapbox.streets")
+
+		MapDetailPlugin.initMapbox()

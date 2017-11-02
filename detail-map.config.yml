@@ -16,5 +16,13 @@ base_config:
     group: css
     parameters:
       enabled:
-        name: enabled
+        position: 0
         type: bool
+      tiles:
+        position: 1
+        type: select
+        options: ["OpenStreetMaps", "Mapbox"]
+        default: "OpenStreetMaps"
+      mapboxToken:
+        position: 2
+        type: text

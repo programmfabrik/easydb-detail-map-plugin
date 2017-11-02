@@ -11,5 +11,7 @@ map.detail.plugin.fullscreen.open.button|tooltip,Vollbildansicht öffnen,Open fu
 map.detail.plugin.zoom.reset.button|icon,fa-dot-circle-o,fa-dot-circle-o,fa-dot-circle-o,fa-dot-circle-o
 map.detail.plugin.zoom.reset.button|tooltip,Zoomlevel zurücksetzen,Reset,,
 server.config.name.system.detail_map,Karten-Einstellungen,Map settings,,Mapa
-server.config.parameter.system.detail_map.enabled.label,Karte im Detail anzeigen,Show map in details,,Mostrar mapa en el detalle
+server.config.parameter.system.detail_map.enabled.label,Karte im Detail anzeigen,Show map in detail,,Mostrar mapa en el detalle
 server.config.parameter.system.detail_map.enabled.checkbox,Aktiviert,Enabled,,Habilitado
+server.config.parameter.system.detail_map.mapboxToken.label,Mapbox Token,Mapbox Token,Mapbox Token,Mapbox Token
+server.config.parameter.system.detail_map.tiles.label,Tiles,Tiles,Tiles,Tiles
