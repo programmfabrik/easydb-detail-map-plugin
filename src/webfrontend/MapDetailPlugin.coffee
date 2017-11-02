@@ -1,5 +1,8 @@
 class MapDetailPlugin extends DetailSidebarPlugin
 
+	@bigIconSize: 512
+	@smallIconSize: 64
+
 	getButtonLocaKey: ->
 		"map.detail.plugin.button"
 
@@ -34,6 +37,15 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			markersOptions: markersOptions,
 			zoomToFitAllMarkersOnInit: true,
 			zoomControl: false
+			onClick: =>
+				if @__markerSelected
+					@__setIconToMarker(@__markerSelected, MapDetailPlugin.smallIconSize)
+
+		CUI.Events.listen
+			type: "viewport-resize"
+			node: @_detailSidebar.mainPane
+			call: =>
+				@__map.resize()
 
 		zoomButtons = @__getZoomButtons()
 		@__zoomButtonbar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: zoomButtons)
@@ -45,10 +57,10 @@ class MapDetailPlugin extends DetailSidebarPlugin
 					map: @__map
 					zoomButtons: zoomButtons
 					onClose: =>
-						@showDetail()
-						@__map.resize()
+						@__onCloseFullscreen()
 				)
 				@__mapFullscreen.render()
+				@__fullscreenActive = true
 		)
 
 	showDetail: ->
@@ -71,16 +83,13 @@ class MapDetailPlugin extends DetailSidebarPlugin
 						position:
 							lat: gps_location.latitude,
 							lng: gps_location.longitude
-						cui_onClick: =>
-							@__mapFullscreen?.close()
-							CUI.Events.trigger
-								node: @_detailSidebar.container
-								type: "asset-browser-show-asset"
-								info:
-									value: asset.value
+						cui_onClick: (event)=>
+							marker = event.target
+							@__markerOnClick(marker)
 
 					if asset.value.versions.small
-						options.icon = @__getDivIcon(asset.value.versions.small)
+						options.icon = @__getDivIcon(asset.value.versions.small, MapDetailPlugin.smallIconSize)
+						options.asset = asset
 
 					markersOptions.push(options)
 
@@ -114,8 +123,8 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		showInMapSetting = asset.getField().FieldSchema.custom_settings.show_in_map
 		return CUI.util.isNull(showInMapSetting) or showInMapSetting
 
-	__getDivIcon: (image) ->
-		[width, height] = ez5.fitRectangle(image.width, image.height, 64, 64)
+	__getDivIcon: (image, size) ->
+		[width, height] = ez5.fitRectangle(image.width, image.height, size, size)
 		padding = 3 # from css
 		pointerHeight = 7 # from css
 
@@ -136,6 +145,31 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			iconSize: [iconWidth, iconHeight]
 		)
 		return divIcon
+
+	__markerOnClick: (marker) ->
+		if @__fullscreenActive
+			if @__markerSelected
+				@__setIconToMarker(@__markerSelected, MapDetailPlugin.smallIconSize)
+
+			@__setIconToMarker(marker, MapDetailPlugin.bigIconSize)
+			@__markerSelected = marker
+		else
+			CUI.Events.trigger
+				node: @_detailSidebar.container
+				type: "asset-browser-show-asset"
+				info:
+					value: marker.options.asset.value
+
+	__onCloseFullscreen: ->
+		if @__markerSelected
+			@__setIconToMarker(@__markerSelected, MapDetailPlugin.smallIconSize)
+		@showDetail()
+		@__map.resize()
+		@__fullscreenActive = false
+
+	__setIconToMarker: (marker, size) ->
+		bigIcon = @__getDivIcon(marker.options.asset.value.versions.small, size)
+		marker.setIcon(bigIcon)
 
 	__getConfiguration: ->
 		ez5.session.getBaseConfig().system["detail_map"] or {}
