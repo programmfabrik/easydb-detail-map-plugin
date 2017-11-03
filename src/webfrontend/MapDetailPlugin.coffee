@@ -44,8 +44,12 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			onClick: =>
 				if @__markerSelected
 					@__setIconToMarker(@__markerSelected, MapDetailPlugin.smallIconSize)
-			onZoomEnd: =>
-				@__onZoomEnd()
+			onMoveEnd: =>
+				@__disableEnableZoomButtons()
+			onReady: =>
+				@__initZoom = @__map.getZoom()
+				@__initCenter = @__map.getCenter()
+				@__disableEnableZoomButtons()
 
 		CUI.Events.listen
 			type: "viewport-resize"
@@ -54,25 +58,21 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				@__map.resize()
 
 		@__zoomButtons = @__getZoomButtons()
-		@__zoomButtonbar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: @__zoomButtons)
-		@__zoomButtonbar.addButton(
-			loca_key: "map.detail.plugin.fullscreen.open.button"
-			group: "fullscreen"
-			onClick: =>
-				@__mapFullscreen = new MapFullscreen(
-					map: @__map
-					zoomButtons: @__zoomButtons
-					onClose: =>
-						@__onCloseFullscreen()
-				)
-				@__mapFullscreen.render()
-				@__fullscreenActive = true
+		@__fullScreenButton = @__getFullScreenButton()
+
+		@__mapFullscreen = new MapFullscreen(
+			map: @__map
+			zoomButtons: @__zoomButtons
+			onClose: =>
+				@__onCloseFullscreen()
 		)
 
 	showDetail: ->
 		if not @__map
 			return
 
+		@__zoomButtonbar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: @__zoomButtons)
+		@__zoomButtonbar.addButton(@__fullScreenButton)
 		@_detailSidebar.mainPane.replace([@__zoomButtonbar, @__map], "top")
 
 	__getMarkerOptions: ->
@@ -110,10 +110,12 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				onClick: =>
 					@__map.zoomIn()
 		,
-			loca_key: "map.detail.plugin.zoom.reset.button"
-			group: "zoom"
-			onClick: =>
-				@__map.zoomToFitAllMarkers()
+			new LocaButton
+				loca_key: "map.detail.plugin.zoom.reset.button"
+				group: "zoom"
+				onClick: =>
+					@__map.setCenter(@__initCenter, @__initZoom)
+					@__disableEnableZoomButtons()
 		,
 			new LocaButton
 				loca_key: "map.detail.plugin.zoom.minus.button"
@@ -121,6 +123,13 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				onClick: =>
 					@__map.zoomOut()
 		]
+
+	__getFullScreenButton: ->
+		loca_key: "map.detail.plugin.fullscreen.open.button"
+		group: "rightButtonbar"
+		onClick: =>
+			@__mapFullscreen.render()
+			@__fullscreenActive = true
 
 	__existsAtLeastOneAssetEnabledByCustomSettings: (assets) ->
 		for asset in assets
@@ -179,8 +188,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		@__map.resize()
 		@__fullscreenActive = false
 
-	__onZoomEnd: ->
+	__disableEnableZoomButtons: ->
 		zoomInButton = @__zoomButtons[0]
+		centerButton = @__zoomButtons[1]
 		zoomOutButton = @__zoomButtons[2]
 		if @__map.getZoom() == MapDetailPlugin.maxZoom
 			zoomInButton.disable()
@@ -191,6 +201,12 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			zoomOutButton.disable()
 		else
 			zoomOutButton.enable()
+
+		currentCenter = @__map.getCenter()
+		if @__map.getZoom() == @__initZoom and Math.round(currentCenter.lat) == Math.round(@__initCenter.lat) and Math.round(currentCenter.lng) == Math.round(@__initCenter.lng)
+			centerButton.disable()
+		else
+			centerButton.enable()
 
 	__setIconToMarker: (marker, size) ->
 		bigIcon = @__getDivIcon(marker.options.asset.value.versions.small, size)

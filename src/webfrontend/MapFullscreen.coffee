@@ -15,19 +15,20 @@ class MapFullscreen extends CUI.DOMElement
 		@registerDOMElement(CUI.dom.div())
 		@addClass("ez5-detail-map-plugin-fullscreen")
 
-	render: ->
-		buttonbar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: @_zoomButtons)
-		buttonbar.addButton(
+		@__closeFullScreenButton =
 			loca_key: "map.detail.plugin.fullscreen.close.button"
-			group: "fullscreen"
+			group: "rightButtonbar"
 			onClick: =>
 				@close()
-		)
+
+	render: ->
+		buttonbar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: @_zoomButtons)
+		buttonbar.addButton(@__closeFullScreenButton)
 
 		CUI.dom.append(@DOM, [buttonbar, @_map])
 		document.body.appendChild(@DOM)
 		@_map.resize()
 
 	close: ->
+		document.body.removeChild(@DOM)
 		@_onClose?()
-		@destroy()
