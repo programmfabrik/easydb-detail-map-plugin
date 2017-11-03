@@ -1,9 +1,13 @@
 class MapDetailPlugin extends DetailSidebarPlugin
 
-	@bigIconSize: 512
+	@bigIconSize: 320
 	@smallIconSize: 64
 	@maxZoom: 18
 	@minZoom: 0
+	@mapboxTilesetStreets: "mapbox.streets"
+	@mapboxTilesetSatellite: "mapbox.satellite"
+	@mapboxLanguageLocale: "locale"
+	@mapboxLanguageApplication: "aplication"
 
 	CUI.LeafletMap.defaults.tileLayerOptions.maxZoom = MapDetailPlugin.maxZoom
 
@@ -29,13 +33,43 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 	renderObject: ->
 		if @__map
-			@__map.destroy()
-			@__mapFullscreen?.destroy()
+			@__destroyMap()
+
 		markersOptions = @__getMarkerOptions()
 		if markersOptions.length == 0
 			return
 
-		@__map = new CUI.LeafletMap
+		@__map = @__buildMap(markersOptions)
+		@__zoomButtons = @__getZoomButtons()
+		@__fullScreenButton = @__getFullScreenButton()
+		if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
+			@__menuButton = @__getMenuButton()
+
+		@__mapFullscreen = new MapFullscreen(
+			map: @__map
+			zoomButtons: @__zoomButtons
+			onClose: =>
+				@__onCloseFullscreen()
+		)
+
+		CUI.Events.listen
+			type: "viewport-resize"
+			node: @_detailSidebar.mainPane
+			call: =>
+				@__map?.resize()
+
+	showDetail: ->
+		if not @__map
+			return
+
+		buttonBar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: @__zoomButtons)
+		if @__menuButton
+			buttonBar.addButton(@__menuButton)
+		buttonBar.addButton(@__fullScreenButton)
+		@_detailSidebar.mainPane.replace([buttonBar, @__map], "top")
+
+	__buildMap: (markersOptions) ->
+		new CUI.LeafletMap
 			class: "ez5-detail-map-plugin"
 			clickable: false,
 			markersOptions: markersOptions,
@@ -50,30 +84,6 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				@__initZoom = @__map.getZoom()
 				@__initCenter = @__map.getCenter()
 				@__disableEnableZoomButtons()
-
-		CUI.Events.listen
-			type: "viewport-resize"
-			node: @_detailSidebar.mainPane
-			call: =>
-				@__map.resize()
-
-		@__zoomButtons = @__getZoomButtons()
-		@__fullScreenButton = @__getFullScreenButton()
-
-		@__mapFullscreen = new MapFullscreen(
-			map: @__map
-			zoomButtons: @__zoomButtons
-			onClose: =>
-				@__onCloseFullscreen()
-		)
-
-	showDetail: ->
-		if not @__map
-			return
-
-		@__zoomButtonbar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: @__zoomButtons)
-		@__zoomButtonbar.addButton(@__fullScreenButton)
-		@_detailSidebar.mainPane.replace([@__zoomButtonbar, @__map], "top")
 
 	__getMarkerOptions: ->
 		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
@@ -103,7 +113,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		markersOptions
 
 	__getZoomButtons: ->
-		[
+		return [
 			new LocaButton
 				loca_key: "map.detail.plugin.zoom.plus.button"
 				group: "zoom"
@@ -111,17 +121,17 @@ class MapDetailPlugin extends DetailSidebarPlugin
 					@__map.zoomIn()
 		,
 			new LocaButton
-				loca_key: "map.detail.plugin.zoom.reset.button"
-				group: "zoom"
-				onClick: =>
-					@__map.setCenter(@__initCenter, @__initZoom)
-					@__disableEnableZoomButtons()
+					loca_key: "map.detail.plugin.zoom.reset.button"
+					group: "zoom"
+					onClick: =>
+						@__map.setCenter(@__initCenter, @__initZoom)
+						@__disableEnableZoomButtons()
 		,
 			new LocaButton
-				loca_key: "map.detail.plugin.zoom.minus.button"
-				group: "zoom"
-				onClick: =>
-					@__map.zoomOut()
+					loca_key: "map.detail.plugin.zoom.minus.button"
+					group: "zoom"
+					onClick: =>
+						@__map.zoomOut()
 		]
 
 	__getFullScreenButton: ->
@@ -130,6 +140,50 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		onClick: =>
 			@__mapFullscreen.render()
 			@__fullscreenActive = true
+
+	__getMenuButton: ->
+		new LocaButton
+			loca_key: "map.detail.plugin.menu.button"
+			icon_right: false
+			group: "rightButtonbar"
+			menu:
+				items: @__getMenuItems()
+
+	__getMenuItems: ->
+		currentTileset = ez5.session.getPref("mapboxTileset")
+		currentLanguage = ez5.session.getPref("mapboxLanguage")
+
+		return [
+			new LocaLabel
+				loca_key: "map.detail.plugin.menu.language.label"
+		,
+			text: $$("map.detail.plugin.menu.language.application.label")
+			active: currentLanguage == MapDetailPlugin.mapboxLanguageApplication
+			onClick: =>
+				ez5.session.setPref("mapboxLanguage", MapDetailPlugin.mapboxLanguageApplication)
+				@__reload()
+		,
+			text: $$("map.detail.plugin.menu.language.locale.label")
+			active: currentLanguage == MapDetailPlugin.mapboxLanguageLocale
+			onClick: =>
+				ez5.session.setPref("mapboxLanguage", MapDetailPlugin.mapboxLanguageLocale)
+				@__reload()
+		,
+			new LocaLabel
+				loca_key: "map.detail.plugin.menu.tileset.label"
+		,
+			text: $$("map.detail.plugin.menu.tileset.street.label")
+			active: currentTileset == MapDetailPlugin.mapboxTilesetStreets
+			onClick: =>
+				ez5.session.setPref("mapboxTileset", MapDetailPlugin.mapboxTilesetStreets)
+				@__reload()
+		,
+			text: $$("map.detail.plugin.menu.tileset.satellite.label")
+			active: currentTileset == MapDetailPlugin.mapboxTilesetSatellite
+			onClick: =>
+				ez5.session.setPref("mapboxTileset", MapDetailPlugin.mapboxTilesetSatellite)
+				@__reload()
+		]
 
 	__existsAtLeastOneAssetEnabledByCustomSettings: (assets) ->
 		for asset in assets
@@ -168,7 +222,6 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		if @__fullscreenActive
 			if @__markerSelected
 				@__setIconToMarker(@__markerSelected, MapDetailPlugin.smallIconSize)
-
 			@__setIconToMarker(marker, MapDetailPlugin.bigIconSize)
 			@__markerSelected = marker
 		else
@@ -209,8 +262,20 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			centerButton.enable()
 
 	__setIconToMarker: (marker, size) ->
-		bigIcon = @__getDivIcon(marker.options.asset.value.versions.small, size)
+		versions = marker.options.asset.value.versions
+		imageVersion = if (size > 200 and versions.preview) then versions.preview else versions.small
+		bigIcon = @__getDivIcon(imageVersion, size)
 		marker.setIcon(bigIcon)
+
+	__destroyMap: ->
+		@__map.destroy()
+		@__mapFullscreen?.destroy()
+		delete @__map
+
+	__reload: ->
+		MapDetailPlugin.initMapbox()
+		@renderObject()
+		@showDetail()
 
 	@getConfiguration: ->
 		ez5.session.getBaseConfig().system["detail_map"] or {}
@@ -219,7 +284,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		mapboxAttribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
 
 		CUI.LeafletMap.defaults.tileLayerOptions.attribution = mapboxAttribution
-		CUI.LeafletMap.defaults.tileLayerOptions.id = ez5.session.getPref("mapboxTilesId")
+		CUI.LeafletMap.defaults.tileLayerOptions.id = ez5.session.getPref("mapboxTileset")
 		CUI.LeafletMap.defaults.tileLayerOptions.accessToken = MapDetailPlugin.getConfiguration().mapboxToken
 		CUI.LeafletMap.defaults.tileLayerUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
 
@@ -227,7 +292,9 @@ ez5.session_ready =>
 	DetailSidebar.plugins.registerPlugin(MapDetailPlugin)
 
 	if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
-		if not ez5.session.getPref("mapboxTilesId")
-			ez5.session.setPref("mapboxTilesId", "mapbox.streets")
+		if not ez5.session.getPref("mapboxTileset")
+			ez5.session.setPref("mapboxTileset", MapDetailPlugin.mapboxTilesetStreets)
+		if not ez5.session.getPref("mapboxLanguage")
+			ez5.session.setPref("mapboxLanguage", MapDetailPlugin.mapboxLanguageLocale)
 
 		MapDetailPlugin.initMapbox()

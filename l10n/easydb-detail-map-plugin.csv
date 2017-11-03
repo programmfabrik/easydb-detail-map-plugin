@@ -8,6 +8,8 @@ map.detail.plugin.fullscreen.close.button|icon,close,close,close,close
 map.detail.plugin.fullscreen.close.button|tooltip,Vollbildansicht schließen,Close fullscreen,,
 map.detail.plugin.fullscreen.open.button|icon,fa-arrows-alt,fa-arrows-alt,fa-arrows-alt,fa-arrows-alt
 map.detail.plugin.fullscreen.open.button|tooltip,Vollbildansicht öffnen,Open fullscreen,,
+map.detail.plugin.menu.button|icon,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v
+map.detail.plugin.menu.button|tooltip,Menu,Menu,Menu,Menú
 map.detail.plugin.zoom.reset.button|icon,fa-dot-circle-o,fa-dot-circle-o,fa-dot-circle-o,fa-dot-circle-o
 map.detail.plugin.zoom.reset.button|tooltip,Zoomlevel zurücksetzen,Reset,,
 server.config.name.system.detail_map,Karten-Einstellungen,Map settings,,Mapa
@@ -15,3 +17,9 @@ server.config.parameter.system.detail_map.enabled.label,Karte im Detail anzeigen
 server.config.parameter.system.detail_map.enabled.checkbox,Aktiviert,Enabled,,Habilitado
 server.config.parameter.system.detail_map.mapboxToken.label,Mapbox Token,Mapbox Token,Mapbox Token,Mapbox Token
 server.config.parameter.system.detail_map.tiles.label,Tiles,Tiles,Tiles,Tiles
+map.detail.plugin.menu.language.label,Language,Language,Language,Language
+map.detail.plugin.menu.language.application.label,Application,Application,Application,Application
+map.detail.plugin.menu.language.locale.label,Locale,Locale,Locale,Locale
+map.detail.plugin.menu.tileset.label,Tileset,Tileset,Tileset,Tileset
+map.detail.plugin.menu.tileset.street.label,Street,Street,Street,Street
+map.detail.plugin.menu.tileset.satellite.label,Satellite,Satellite,Satellite,Satellite
