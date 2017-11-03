@@ -61,7 +61,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			onClick: =>
 				@__mapFullscreen = new MapFullscreen(
 					map: @__map
-					zoomButtons: zoomButtons
+					zoomButtons: @__zoomButtons
 					onClose: =>
 						@__onCloseFullscreen()
 				)
