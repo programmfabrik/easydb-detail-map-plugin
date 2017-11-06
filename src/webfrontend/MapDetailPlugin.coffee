@@ -5,9 +5,8 @@ class MapDetailPlugin extends DetailSidebarPlugin
 	@maxZoom: 18
 	@minZoom: 0
 	@mapboxTilesetStreets: "mapbox.streets"
+	@mapboxTilesetStreetsEnglish: "mapbox.run-bike-hike"
 	@mapboxTilesetSatellite: "mapbox.satellite"
-	@mapboxLanguageLocale: "locale"
-	@mapboxLanguageApplication: "aplication"
 
 	CUI.LeafletMap.defaults.tileLayerOptions.maxZoom = MapDetailPlugin.maxZoom
 
@@ -42,12 +41,13 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		@__map = @__buildMap(markersOptions)
 		@__zoomButtons = @__getZoomButtons()
 		@__fullScreenButton = @__getFullScreenButton()
-		if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
-			@__menuButton = @__getMenuButton()
+
+		@__menuButton = @__getMenuButton()
 
 		@__mapFullscreen = new MapFullscreen(
 			map: @__map
 			zoomButtons: @__zoomButtons
+			menuButton: @__menuButton
 			onClose: =>
 				@__onCloseFullscreen()
 		)
@@ -63,9 +63,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			return
 
 		buttonBar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: @__zoomButtons)
-		if @__menuButton
-			buttonBar.addButton(@__menuButton)
 		buttonBar.addButton(@__fullScreenButton)
+		buttonBar.addButton(@__menuButton)
+
 		@_detailSidebar.mainPane.replace([buttonBar, @__map], "top")
 
 	__buildMap: (markersOptions) ->
@@ -142,46 +142,55 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			@__fullscreenActive = true
 
 	__getMenuButton: ->
+		if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
+			items = @__getMenuItems()
+		else
+			items = [
+				new LocaLabel
+					loca_key: "map.detail.plugin.menu.no.options.label"
+			]
+
 		new LocaButton
 			loca_key: "map.detail.plugin.menu.button"
 			icon_right: false
 			group: "rightButtonbar"
 			menu:
-				items: @__getMenuItems()
+				items: items
 
 	__getMenuItems: ->
-		currentTileset = ez5.session.getPref("mapboxTileset")
-		currentLanguage = ez5.session.getPref("mapboxLanguage")
+		currentTileset = ez5.session.getPref("map").mapboxTileset
 
 		return [
 			new LocaLabel
 				loca_key: "map.detail.plugin.menu.language.label"
 		,
-			text: $$("map.detail.plugin.menu.language.application.label")
-			active: currentLanguage == MapDetailPlugin.mapboxLanguageApplication
+			text: $$("map.detail.plugin.menu.language.english.label")
+			active: currentTileset == MapDetailPlugin.mapboxTilesetStreetsEnglish
+			disabled: currentTileset == MapDetailPlugin.mapboxTilesetSatellite
 			onClick: =>
-				ez5.session.setPref("mapboxLanguage", MapDetailPlugin.mapboxLanguageApplication)
+				ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreetsEnglish)
 				@__reload()
 		,
 			text: $$("map.detail.plugin.menu.language.locale.label")
-			active: currentLanguage == MapDetailPlugin.mapboxLanguageLocale
+			active: currentTileset == MapDetailPlugin.mapboxTilesetStreets || currentTileset == MapDetailPlugin.mapboxTilesetSatellite
 			onClick: =>
-				ez5.session.setPref("mapboxLanguage", MapDetailPlugin.mapboxLanguageLocale)
-				@__reload()
+				if currentTileset != MapDetailPlugin.mapboxTilesetSatellite
+					ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreets)
+					@__reload()
 		,
 			new LocaLabel
 				loca_key: "map.detail.plugin.menu.tileset.label"
 		,
 			text: $$("map.detail.plugin.menu.tileset.street.label")
-			active: currentTileset == MapDetailPlugin.mapboxTilesetStreets
+			active: currentTileset == MapDetailPlugin.mapboxTilesetStreets || currentTileset == MapDetailPlugin.mapboxTilesetStreetsEnglish
 			onClick: =>
-				ez5.session.setPref("mapboxTileset", MapDetailPlugin.mapboxTilesetStreets)
+				ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreets)
 				@__reload()
 		,
 			text: $$("map.detail.plugin.menu.tileset.satellite.label")
 			active: currentTileset == MapDetailPlugin.mapboxTilesetSatellite
 			onClick: =>
-				ez5.session.setPref("mapboxTileset", MapDetailPlugin.mapboxTilesetSatellite)
+				ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetSatellite)
 				@__reload()
 		]
 
@@ -277,6 +286,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		@renderObject()
 		@showDetail()
 
+		if @__fullscreenActive
+			@__mapFullscreen.render()
+
 	@getConfiguration: ->
 		ez5.session.getBaseConfig().system["detail_map"] or {}
 
@@ -284,7 +296,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		mapboxAttribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
 
 		CUI.LeafletMap.defaults.tileLayerOptions.attribution = mapboxAttribution
-		CUI.LeafletMap.defaults.tileLayerOptions.id = ez5.session.getPref("mapboxTileset")
+		CUI.LeafletMap.defaults.tileLayerOptions.id = ez5.session.getPref("map").mapboxTileset
 		CUI.LeafletMap.defaults.tileLayerOptions.accessToken = MapDetailPlugin.getConfiguration().mapboxToken
 		CUI.LeafletMap.defaults.tileLayerUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
 
@@ -292,9 +304,7 @@ ez5.session_ready =>
 	DetailSidebar.plugins.registerPlugin(MapDetailPlugin)
 
 	if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
-		if not ez5.session.getPref("mapboxTileset")
-			ez5.session.setPref("mapboxTileset", MapDetailPlugin.mapboxTilesetStreets)
-		if not ez5.session.getPref("mapboxLanguage")
-			ez5.session.setPref("mapboxLanguage", MapDetailPlugin.mapboxLanguageLocale)
+		if not ez5.session.getPref("map").mapboxTileset
+			ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreets)
 
 		MapDetailPlugin.initMapbox()
