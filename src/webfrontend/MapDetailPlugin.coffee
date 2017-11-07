@@ -171,7 +171,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreetsEnglish)
 				@__reload()
 		,
-			text: $$("map.detail.plugin.menu.language.locale.label")
+			text: $$("map.detail.plugin.menu.language.local.label")
 			active: currentTileset == MapDetailPlugin.mapboxTilesetStreets || currentTileset == MapDetailPlugin.mapboxTilesetSatellite
 			onClick: =>
 				if currentTileset != MapDetailPlugin.mapboxTilesetSatellite

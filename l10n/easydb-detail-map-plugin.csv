@@ -19,7 +19,7 @@ server.config.parameter.system.detail_map.mapboxToken.label,Mapbox Token,Mapbox 
 server.config.parameter.system.detail_map.tiles.label,Tiles,Tiles,Tiles,Tiles
 map.detail.plugin.menu.language.label,Language,Language,Language,Language
 map.detail.plugin.menu.language.english.label,English,English,English,English
-map.detail.plugin.menu.language.locale.label,Locale,Locale,Locale,Locale
+map.detail.plugin.menu.language.local.label,Local,Local,Local,Local
 map.detail.plugin.menu.tileset.label,Tileset,Tileset,Tileset,Tileset
 map.detail.plugin.menu.tileset.street.label,Street,Street,Street,Street
 map.detail.plugin.menu.tileset.satellite.label,Satellite,Satellite,Satellite,Satellite
