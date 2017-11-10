@@ -10,6 +10,13 @@ plugin:
   webfrontend:
     url: easydb-detail-map-plugin.js
     l10n: l10n/
+    type_extension:
+      mask:
+        eas:
+          - name: show_in_map
+            parameters:
+              type: bool
+              default: true
 
 base_config:
   - name: detail_map
