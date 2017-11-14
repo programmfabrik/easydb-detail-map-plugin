@@ -13,10 +13,11 @@ plugin:
     type_extension:
       mask:
         eas:
-          - name: show_in_map
+          - name: map
             parameters:
-              type: bool
-              default: true
+              show_in_map:
+                type: bool
+                default: true
 
 base_config:
   - name: detail_map
