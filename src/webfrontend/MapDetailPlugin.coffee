@@ -20,8 +20,14 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		if not MapDetailPlugin.getConfiguration().enabled
 			return false
 
+		positions = []
+		if CustomDataTypeLocation
+			positions = @_detailSidebar.object.getCustomDataTypeFields("detail", CustomDataTypeLocation)
+
 		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
-		return assets and assets.length > 0 and @__existsAtLeastOneAssetEnabledByCustomSettings(assets)
+		isAvailableByAssets = assets and assets.length > 0 and @__existsAtLeastOneAssetEnabledByCustomSettings(assets)
+		isAvailableByCustomDataTypeLocations = positions.length > 0
+		return isAvailableByAssets or isAvailableByCustomDataTypeLocations
 
 	isDisabled: ->
 		markersOptions = @__getMarkerOptions()
@@ -109,6 +115,13 @@ class MapDetailPlugin extends DetailSidebarPlugin
 						options.asset = asset
 
 					markersOptions.push(options)
+
+		if CustomDataTypeLocation
+			customDataArray = @_detailSidebar.object.getCustomDataTypeFields("detail", CustomDataTypeLocation)
+			for customData in customDataArray
+				markersOptions.push(
+					position: customData.position
+				)
 
 		markersOptions
 
