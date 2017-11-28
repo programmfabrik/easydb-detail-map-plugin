@@ -17,21 +17,12 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		"detail_sidebar_show_map"
 
 	isAvailable: ->
-		if not MapDetailPlugin.getConfiguration().enabled
-			return false
-
-		positions = []
-		if CustomDataTypeLocation
-			positions = @_detailSidebar.object.getCustomDataTypeFields("detail", CustomDataTypeLocation)
-
-		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
-		isAvailableByAssets = assets and assets.length > 0 and @__existsAtLeastOneAssetEnabledByCustomSettings(assets)
-		isAvailableByCustomDataTypeLocations = positions.length > 0
-		return isAvailableByAssets or isAvailableByCustomDataTypeLocations
+		return MapDetailPlugin.getConfiguration().enabled and @__areMarkersAvailable()
 
 	isDisabled: ->
-		markersOptions = @__getMarkerOptions()
-		markersOptions.length == 0
+		assetMarkerOptions = @__getAssetMarkerOptions()
+		customLocationMarkerOptions = @__getCustomLocationMarkerOptions()
+		return assetMarkerOptions.length == 0 and customLocationMarkerOptions.length == 0
 
 	hideDetail: ->
 		@_detailSidebar.mainPane.empty("top")
@@ -40,11 +31,11 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		if @__map
 			@__destroyMap()
 
-		markersOptions = @__getMarkerOptions()
-		if markersOptions.length == 0
-			return
+		assetMarkerOptions = @__getAssetMarkerOptions()
+		customLocationMarkerOptions = @__getCustomLocationMarkerOptions()
+		markerOptions = assetMarkerOptions.concat(customLocationMarkerOptions)
 
-		@__map = @__buildMap(markersOptions)
+		@__map = @__buildMap(markerOptions)
 		@__zoomButtons = @__getZoomButtons()
 		@__fullScreenButton = @__getFullScreenButton()
 
@@ -91,10 +82,10 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				@__initCenter = @__map.getCenter()
 				@__disableEnableZoomButtons()
 
-	__getMarkerOptions: ->
+	__getAssetMarkerOptions: ->
 		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
 
-		markersOptions = []
+		assetMarkerOptions = []
 		for asset in assets
 			if not @__isAssetEnabledByCustomSetting(asset)
 				continue
@@ -114,16 +105,19 @@ class MapDetailPlugin extends DetailSidebarPlugin
 						options.icon = @__getDivIcon(asset.value.versions.small, MapDetailPlugin.smallIconSize)
 						options.asset = asset
 
-					markersOptions.push(options)
+					assetMarkerOptions.push(options)
 
-		if CustomDataTypeLocation
+		assetMarkerOptions
+
+	__getCustomLocationMarkerOptions: ->
+		customLocationMarkerOptions = []
+		if @__isCustomDataTypeLocationEnabled()
 			customDataArray = @_detailSidebar.object.getCustomDataTypeFields("detail", CustomDataTypeLocation)
 			for customData in customDataArray
-				markersOptions.push(
+				customLocationMarkerOptions.push(
 					position: customData.position
 				)
-
-		markersOptions
+		return customLocationMarkerOptions
 
 	__getZoomButtons: ->
 		return [
@@ -206,6 +200,15 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetSatellite)
 				@__reload()
 		]
+
+	__areMarkersAvailable: ->
+		if @__isCustomDataTypeLocationEnabled()
+			positions = @_detailSidebar.object.getCustomDataTypeFields("detail", CustomDataTypeLocation)
+
+		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
+		isAvailableByAssets = assets and assets.length > 0 and @__existsAtLeastOneAssetEnabledByCustomSettings(assets)
+		isAvailableByCustomDataTypeLocations = positions && positions.length > 0
+		return isAvailableByAssets or isAvailableByCustomDataTypeLocations
 
 	__existsAtLeastOneAssetEnabledByCustomSettings: (assets) ->
 		for asset in assets
@@ -301,6 +304,10 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 		if @__fullscreenActive
 			@__mapFullscreen.render()
+
+	__isCustomDataTypeLocationEnabled: ->
+		isUnknownCustomDataType = CustomDataType.get("custom:base.custom-data-type-location.location") instanceof CustomDataTypeUnknown
+		return not isUnknownCustomDataType
 
 	@getConfiguration: ->
 		ez5.session.getBaseConfig().system["detail_map"] or {}
