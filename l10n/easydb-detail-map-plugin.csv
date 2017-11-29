@@ -25,3 +25,5 @@ map.detail.plugin.menu.tileset.street.label,Karte,Street,Street,Street
 map.detail.plugin.menu.tileset.satellite.label,Satellit,Satellite,Satellite,Satellite
 map.detail.plugin.menu.no.options.label,Keine Optionen,No options,No options,No options
 map.detail.plugin.button|tooltip,Kartenansicht,Map view,,Vista de mapa
+type.extension.custom.settings.config.parameter.base.map.show_in_map.label,Karte,Map,Map,Mapa
+type.extension.custom.settings.config.parameter.base.map.show_in_map.checkbox,In Karte anzeigen,Show in map,Show in map,Mostrar en mapa
