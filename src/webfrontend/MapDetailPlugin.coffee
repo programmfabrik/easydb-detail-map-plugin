@@ -112,14 +112,26 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 	__getCustomLocationMarkerOptions: ->
 		customLocationMarkerOptions = []
+		groupIndex = 0
+
+		addToLocationsArray = (data) ->
+			customLocationMarkerOptions.push(
+				position: data.position
+				iconColor: data.iconColor
+				iconName: data.iconName
+				group: data.group
+			)
+
 		if @__isCustomDataTypeLocationEnabled()
 			customDataArray = @_detailSidebar.object.getCustomDataTypeFields("detail", CustomDataTypeLocation)
 			for customData in customDataArray
-				customLocationMarkerOptions.push(
-					position: customData.position
-					iconColor: customData.iconColor
-					iconName: customData.iconName
-				)
+				if CUI.isArray(customData)
+					for data in customData
+						data.group = "group-#{groupIndex}"
+						addToLocationsArray(data)
+					groupIndex++
+				else
+					addToLocationsArray(customData)
 		return customLocationMarkerOptions
 
 	__getZoomButtons: ->
