@@ -117,6 +117,8 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			for customData in customDataArray
 				customLocationMarkerOptions.push(
 					position: customData.position
+					iconColor: customData.iconColor
+					iconName: customData.iconName
 				)
 		return customLocationMarkerOptions
 
