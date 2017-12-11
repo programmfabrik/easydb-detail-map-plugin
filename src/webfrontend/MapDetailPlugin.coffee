@@ -61,7 +61,8 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 		buttonBar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: @__zoomButtons)
 		buttonBar.addButton(@__fullScreenButton)
-		buttonBar.addButton(@__menuButton)
+		if @__menuButton
+			buttonBar.addButton(@__menuButton)
 
 		@_detailSidebar.mainPane.replace([buttonBar, @__map], "top")
 
@@ -150,19 +151,12 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 	__getMenuButton: ->
 		if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
-			items = @__getMenuItems()
-		else
-			items = [
-				new LocaLabel
-					loca_key: "map.detail.plugin.menu.no.options.label"
-			]
-
-		new LocaButton
-			loca_key: "map.detail.plugin.menu.button"
-			icon_right: false
-			group: "rightButtonbar"
-			menu:
-				items: items
+			new LocaButton
+				loca_key: "map.detail.plugin.menu.button"
+				icon_right: false
+				group: "rightButtonbar"
+				menu:
+					items: @__getMenuItems()
 
 	__getMenuItems: ->
 		currentTileset = ez5.session.getPref("map").mapboxTileset
