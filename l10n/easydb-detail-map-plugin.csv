@@ -1,8 +1,6 @@
 key,de-DE,en-US,it-IT,es-ES
 map.detail.plugin.button|icon,fa-map-o,fa-map-o,fa-map-o,fa-map-o
-map.detail.plugin.zoom.plus.button|icon,zoom_in,zoom_in,zoom_in,zoom_in
 map.detail.plugin.zoom.plus.button|tooltip,In Karte hinein zoomen.,Zoom in,,
-map.detail.plugin.zoom.minus.button|icon,zoom_out,zoom_out,zoom_out,zoom_out
 map.detail.plugin.zoom.minus.button|tooltip,Aus Karte heraus zoomen.,Zoom out,,
 map.detail.plugin.fullscreen.close.button|icon,close,close,close,close
 map.detail.plugin.fullscreen.close.button|tooltip,Vollbildansicht schließen,Close fullscreen,,
@@ -10,7 +8,6 @@ map.detail.plugin.fullscreen.open.button|icon,fa-arrows-alt,fa-arrows-alt,fa-arr
 map.detail.plugin.fullscreen.open.button|tooltip,Vollbildansicht öffnen,Open fullscreen,,
 map.detail.plugin.menu.button|icon,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v
 map.detail.plugin.menu.button|tooltip,Optionen,Options,Menu,Menú
-map.detail.plugin.zoom.reset.button|icon,fa-dot-circle-o,fa-dot-circle-o,fa-dot-circle-o,fa-dot-circle-o
 map.detail.plugin.zoom.reset.button|tooltip,Zoomlevel zurücksetzen,Reset,,
 server.config.name.system.detail_map,Karten-Einstellungen,Map settings,,Mapa
 server.config.parameter.system.detail_map.enabled.label,Karte im Detail anzeigen,Show map in detail,,Mostrar mapa en el detalle

@@ -5,8 +5,6 @@ class MapFullscreen extends CUI.DOMElement
 		@addOpts
 			map:
 				check: CUI.LeafletMap
-			zoomButtons:
-				check: Array
 			menuButton:
 				check: CUI.Button
 			onClose:
@@ -24,12 +22,14 @@ class MapFullscreen extends CUI.DOMElement
 				@close()
 
 	render: ->
-		buttonbar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: @_zoomButtons)
-		buttonbar.addButton(@__closeFullScreenButton)
+		buttons = [@__closeFullScreenButton]
 		if @_menuButton
-			buttonbar.addButton(@_menuButton)
+			buttons.push(@_menuButton)
 
-		CUI.dom.append(@DOM, [buttonbar, @_map])
+		CUI.dom.append(@DOM, @_map)
+
+		@_map.setButtonBar(buttons, "upper-right")
+
 		document.body.appendChild(@DOM)
 		@_map.resize()
 

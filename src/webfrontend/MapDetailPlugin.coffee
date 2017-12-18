@@ -2,13 +2,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 	@bigIconSize: 320
 	@smallIconSize: 64
-	@maxZoom: 18
-	@minZoom: 0
 	@mapboxTilesetStreets: "mapbox.streets"
 	@mapboxTilesetStreetsEnglish: "mapbox.run-bike-hike"
 	@mapboxTilesetSatellite: "mapbox.satellite"
-
-	CUI.LeafletMap.defaults.tileLayerOptions.maxZoom = MapDetailPlugin.maxZoom
 
 	getButtonLocaKey: ->
 		"map.detail.plugin.button"
@@ -35,17 +31,18 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		customLocationMarkerOptions = @__getCustomLocationMarkerOptions()
 		markerOptions = assetMarkerOptions.concat(customLocationMarkerOptions)
 
-		@__map = @__buildMap(markerOptions)
-		@__zoomButtons = @__getZoomButtons()
-		@__fullScreenButton = @__getFullScreenButton()
-
 		@__menuButton = @__getMenuButton()
+		@__buttonsUpperRight = [@__getFullScreenButton()]
+		if @__menuButton
+			@__buttonsUpperRight.push(@__menuButton)
+
+		@__map = @__buildMap(markerOptions)
 
 		@__mapFullscreen = new MapFullscreen(
 			map: @__map
-			zoomButtons: @__zoomButtons
 			menuButton: @__menuButton
 			onClose: =>
+				@__map.setButtonBar(@__buttonsUpperRight, "upper-right")
 				@__onCloseFullscreen()
 		)
 
@@ -59,12 +56,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		if not @__map
 			return
 
-		buttonBar = new CUI.Buttonbar(class: "ez5-detail-map-plugin-zoom-buttons", buttons: @__zoomButtons)
-		buttonBar.addButton(@__fullScreenButton)
-		if @__menuButton
-			buttonBar.addButton(@__menuButton)
-
-		@_detailSidebar.mainPane.replace([buttonBar, @__map], "top")
+		@_detailSidebar.mainPane.replace(@__map, "top")
 
 	__buildMap: (markersOptions) ->
 		new CUI.LeafletMap
@@ -72,16 +64,10 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			clickable: false,
 			markersOptions: markersOptions,
 			zoomToFitAllMarkersOnInit: true,
-			zoomControl: false
+			buttonsUpperRight: @__buttonsUpperRight
 			onClick: =>
 				if @__markerSelected
 					@__setIconToMarker(@__markerSelected, MapDetailPlugin.smallIconSize)
-			onMoveEnd: =>
-				@__disableEnableZoomButtons()
-			onReady: =>
-				@__initZoom = @__map.getZoom()
-				@__initCenter = @__map.getCenter()
-				@__disableEnableZoomButtons()
 
 	__getAssetMarkerOptions: ->
 		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
@@ -133,28 +119,6 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				else
 					addToLocationsArray(customData)
 		return customLocationMarkerOptions
-
-	__getZoomButtons: ->
-		return [
-			new LocaButton
-				loca_key: "map.detail.plugin.zoom.plus.button"
-				group: "zoom"
-				onClick: =>
-					@__map.zoomIn()
-		,
-			new LocaButton
-					loca_key: "map.detail.plugin.zoom.reset.button"
-					group: "zoom"
-					onClick: =>
-						@__map.setCenter(@__initCenter, @__initZoom)
-						@__disableEnableZoomButtons()
-		,
-			new LocaButton
-					loca_key: "map.detail.plugin.zoom.minus.button"
-					group: "zoom"
-					onClick: =>
-						@__map.zoomOut()
-		]
 
 	__getFullScreenButton: ->
 		loca_key: "map.detail.plugin.fullscreen.open.button"
@@ -258,14 +222,14 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			@__setIconToMarker(marker, MapDetailPlugin.bigIconSize)
 			@__markerSelected = marker
 		else
-			if @__map.getZoom() == MapDetailPlugin.maxZoom
+			if @__map.getZoom() == CUI.Map.defaults.maxZoom
 				CUI.Events.trigger
 					node: @_detailSidebar.container
 					type: "asset-browser-show-asset"
 					info:
 						value: marker.options.asset.value
 			else
-				@__map.setCenter(marker.getLatLng(), MapDetailPlugin.maxZoom)
+				@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
 
 	__onCloseFullscreen: ->
 		if @__markerSelected
@@ -273,26 +237,6 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		@showDetail()
 		@__map.resize()
 		@__fullscreenActive = false
-
-	__disableEnableZoomButtons: ->
-		zoomInButton = @__zoomButtons[0]
-		centerButton = @__zoomButtons[1]
-		zoomOutButton = @__zoomButtons[2]
-		if @__map.getZoom() == MapDetailPlugin.maxZoom
-			zoomInButton.disable()
-		else
-			zoomInButton.enable()
-
-		if @__map.getZoom() == MapDetailPlugin.minZoom
-			zoomOutButton.disable()
-		else
-			zoomOutButton.enable()
-
-		currentCenter = @__map.getCenter()
-		if @__map.getZoom() == @__initZoom and Math.round(currentCenter.lat) == Math.round(@__initCenter.lat) and Math.round(currentCenter.lng) == Math.round(@__initCenter.lng)
-			centerButton.disable()
-		else
-			centerButton.enable()
 
 	__setIconToMarker: (marker, size) ->
 		versions = marker.options.asset.value.versions
@@ -330,6 +274,10 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 ez5.session_ready =>
 	DetailSidebar.plugins.registerPlugin(MapDetailPlugin)
+
+	CUI.Map.defaults.zoomButtons.plus.tooltip = $$("map.detail.plugin.zoom.plus.button|tooltip")
+	CUI.Map.defaults.zoomButtons.reset.tooltip = $$("map.detail.plugin.zoom.reset.button|tooltip")
+	CUI.Map.defaults.zoomButtons.minus.tooltip = $$("map.detail.plugin.zoom.minus.button|tooltip")
 
 	if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
 		if not ez5.session.getPref("map").mapboxTileset
