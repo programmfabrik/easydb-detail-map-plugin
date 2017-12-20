@@ -7,7 +7,7 @@
   height: 100%;
 
   .cui-leaflet-map {
-    height: 100%!important;
+    height: 100% !important;
   }
 }
 
@@ -15,7 +15,7 @@
   height: 100%;
 
   .cui-leaflet-map {
-    height: 100%!important;
+    height: 100% !important;
   }
 }
 
@@ -24,8 +24,8 @@
   padding: 3px;
   border-radius: 3px;
   position: relative;
-  box-shadow: 0 1px 5px hsla(0,0%,0%,.2);
-  
+  box-shadow: 0 1px 5px hsla(0, 0%, 0%, .2);
+
   &-image {
     vertical-align: bottom;
     border-radius: 1px;
@@ -41,7 +41,7 @@
     width: 18px;
     height: 14px;
     overflow: hidden;
-    
+
     &:after {
       content: "";
       width: 12px;
@@ -52,7 +52,7 @@
       top: -7px;
       margin-left: -6px;
       transform: rotate(45deg);
-      box-shadow: 0 0 5px hsla(0,0%,0%,.2);
+      box-shadow: 0 0 5px hsla(0, 0%, 0%, .2);
     }
   }
 }

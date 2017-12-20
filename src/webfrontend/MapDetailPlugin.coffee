@@ -46,7 +46,20 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				@__onCloseFullscreen()
 		)
 
-		CUI.Events.listen
+		@__mapDetailCenterListener = CUI.Events.listen
+			type: "map-detail-center"
+			node: @_detailSidebar.container
+			call: (_, position) =>
+				if CUI.Map.isValidPosition(position)
+					if not @getButton().isActive()
+						@getButton().activate()
+
+					if @__isMapReady
+						@__map.setCenter(position, CUI.Map.defaults.maxZoom)
+					else
+						@__initCenter = position
+
+		@__viewportResizeListener = CUI.Events.listen
 			type: "viewport-resize"
 			node: @_detailSidebar.mainPane
 			call: =>
@@ -68,6 +81,11 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			onClick: =>
 				if @__markerSelected
 					@__setIconToMarker(@__markerSelected, MapDetailPlugin.smallIconSize)
+			onReady: =>
+				@__isMapReady = true
+				if @__initCenter
+					@__map.setCenter(@__initCenter, CUI.Map.defaults.maxZoom)
+					delete @__initCenter
 
 	__getAssetMarkerOptions: ->
 		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
@@ -98,14 +116,14 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 	__getCustomLocationMarkerOptions: ->
 		customLocationMarkerOptions = []
-		groupIndex = 0
 
 		addToLocationsArray = (data) ->
+			mapPosition = data.mapPosition
 			customLocationMarkerOptions.push(
-				position: data.position
-				iconColor: data.iconColor
-				iconName: data.iconName
-				group: data.group
+				position: mapPosition.position
+				iconColor: mapPosition.iconColor
+				iconName: mapPosition.iconName
+				group: mapPosition.groupColor
 			)
 
 		if @__isCustomDataTypeLocationEnabled()
@@ -113,9 +131,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			for customData in customDataArray
 				if CUI.isArray(customData)
 					for data in customData
-						data.group = "group-#{groupIndex}"
 						addToLocationsArray(data)
-					groupIndex++
 				else
 					addToLocationsArray(customData)
 		return customLocationMarkerOptions
@@ -140,37 +156,37 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		currentTileset = ez5.session.getPref("map").mapboxTileset
 
 		return [
-			new LocaLabel
-				loca_key: "map.detail.plugin.menu.language.label"
-		,
-			text: $$("map.detail.plugin.menu.language.english.label")
-			active: currentTileset == MapDetailPlugin.mapboxTilesetStreetsEnglish
-			disabled: currentTileset == MapDetailPlugin.mapboxTilesetSatellite
-			onClick: =>
-				ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreetsEnglish)
-				@__reload()
-		,
-			text: $$("map.detail.plugin.menu.language.local.label")
-			active: currentTileset == MapDetailPlugin.mapboxTilesetStreets || currentTileset == MapDetailPlugin.mapboxTilesetSatellite
-			onClick: =>
-				if currentTileset != MapDetailPlugin.mapboxTilesetSatellite
+				new LocaLabel
+					loca_key: "map.detail.plugin.menu.language.label"
+			,
+				text: $$("map.detail.plugin.menu.language.english.label")
+				active: currentTileset == MapDetailPlugin.mapboxTilesetStreetsEnglish
+				disabled: currentTileset == MapDetailPlugin.mapboxTilesetSatellite
+				onClick: =>
+					ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreetsEnglish)
+					@__reload()
+			,
+				text: $$("map.detail.plugin.menu.language.local.label")
+				active: currentTileset == MapDetailPlugin.mapboxTilesetStreets || currentTileset == MapDetailPlugin.mapboxTilesetSatellite
+				onClick: =>
+					if currentTileset != MapDetailPlugin.mapboxTilesetSatellite
+						ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreets)
+						@__reload()
+			,
+				new LocaLabel
+					loca_key: "map.detail.plugin.menu.tileset.label"
+			,
+				text: $$("map.detail.plugin.menu.tileset.street.label")
+				active: currentTileset == MapDetailPlugin.mapboxTilesetStreets || currentTileset == MapDetailPlugin.mapboxTilesetStreetsEnglish
+				onClick: =>
 					ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreets)
 					@__reload()
-		,
-			new LocaLabel
-				loca_key: "map.detail.plugin.menu.tileset.label"
-		,
-			text: $$("map.detail.plugin.menu.tileset.street.label")
-			active: currentTileset == MapDetailPlugin.mapboxTilesetStreets || currentTileset == MapDetailPlugin.mapboxTilesetStreetsEnglish
-			onClick: =>
-				ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreets)
-				@__reload()
-		,
-			text: $$("map.detail.plugin.menu.tileset.satellite.label")
-			active: currentTileset == MapDetailPlugin.mapboxTilesetSatellite
-			onClick: =>
-				ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetSatellite)
-				@__reload()
+			,
+				text: $$("map.detail.plugin.menu.tileset.satellite.label")
+				active: currentTileset == MapDetailPlugin.mapboxTilesetSatellite
+				onClick: =>
+					ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetSatellite)
+					@__reload()
 		]
 
 	__areMarkersAvailable: ->
@@ -245,9 +261,13 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		marker.setIcon(bigIcon)
 
 	__destroyMap: ->
+		@__isMapReady = false
 		@__map.destroy()
 		@__mapFullscreen?.destroy()
 		delete @__map
+
+		@__mapDetailCenterListener.destroy()
+		@__viewportResizeListener.destroy()
 
 	__reload: ->
 		MapDetailPlugin.initMapbox()
@@ -284,3 +304,8 @@ ez5.session_ready =>
 			ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreets)
 
 		MapDetailPlugin.initMapbox()
+
+CUI.ready ->
+	CUI.Events.registerEvent
+		type: "map-detail-center"
+		sink: true
