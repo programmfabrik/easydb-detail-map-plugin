@@ -104,7 +104,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 							lng: gps_location.longitude
 						cui_onClick: (event)=>
 							marker = event.target
-							@__markerOnClick(marker)
+							@__assetMarkerOnClick(marker)
 
 					if asset.value.versions.small
 						options.icon = @__getDivIcon(asset.value.versions.small, MapDetailPlugin.smallIconSize)
@@ -117,13 +117,16 @@ class MapDetailPlugin extends DetailSidebarPlugin
 	__getCustomLocationMarkerOptions: ->
 		customLocationMarkerOptions = []
 
-		addToLocationsArray = (data) ->
+		addToLocationsArray = (data) =>
 			mapPosition = data.mapPosition
 			customLocationMarkerOptions.push(
 				position: mapPosition.position
 				iconColor: mapPosition.iconColor
 				iconName: mapPosition.iconName
 				group: mapPosition.groupColor
+				cui_onClick: (event)	=>
+					marker = event.target
+					@__customLocationMarkerOnClick(marker)
 			)
 
 		if @__isCustomDataTypeLocationEnabled()
@@ -231,7 +234,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		)
 		return divIcon
 
-	__markerOnClick: (marker) ->
+	__assetMarkerOnClick: (marker) ->
 		if @__fullscreenActive
 			if @__markerSelected
 				@__setIconToMarker(@__markerSelected, MapDetailPlugin.smallIconSize)
@@ -246,6 +249,12 @@ class MapDetailPlugin extends DetailSidebarPlugin
 						value: marker.options.asset.value
 			else
 				@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
+
+	__customLocationMarkerOnClick: (marker) ->
+		if @__map.getZoom() == CUI.Map.defaults.maxZoom
+			# Highlight input
+		else
+			@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
 
 	__onCloseFullscreen: ->
 		if @__markerSelected
