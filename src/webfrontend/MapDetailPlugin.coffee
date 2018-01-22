@@ -123,10 +123,10 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				position: mapPosition.position
 				iconColor: mapPosition.iconColor
 				iconName: mapPosition.iconName
-				group: mapPosition.groupColor
+				group: data.groupColor
 				cui_onClick: (event)	=>
 					marker = event.target
-					@__customLocationMarkerOnClick(marker)
+					@__customLocationMarkerOnClick(marker, data)
 			)
 
 		if @__isCustomDataTypeLocationEnabled()
@@ -250,9 +250,12 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			else
 				@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
 
-	__customLocationMarkerOnClick: (marker) ->
+	__customLocationMarkerOnClick: (marker, data) ->
 		if @__map.getZoom() == CUI.Map.defaults.maxZoom
-			# Highlight input
+			CUI.Events.trigger
+				node: @_detailSidebar.container
+				type: "location-marker-clicked"
+				info: data
 		else
 			@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
 

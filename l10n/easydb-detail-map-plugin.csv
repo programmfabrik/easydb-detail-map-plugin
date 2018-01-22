@@ -1,14 +1,14 @@
 key,de-DE,en-US,it-IT,es-ES
 map.detail.plugin.button|icon,fa-map-o,fa-map-o,fa-map-o,fa-map-o
-map.detail.plugin.zoom.plus.button|tooltip,In Karte hinein zoomen.,Zoom in,,
-map.detail.plugin.zoom.minus.button|tooltip,Aus Karte heraus zoomen.,Zoom out,,
+map.detail.plugin.zoom.plus.button|tooltip,In Karte hinein zoomen.,Zoom in,,Acercar vista
+map.detail.plugin.zoom.minus.button|tooltip,Aus Karte heraus zoomen.,Zoom out,,Alejar vista
 map.detail.plugin.fullscreen.close.button|icon,close,close,close,close
-map.detail.plugin.fullscreen.close.button|tooltip,Vollbildansicht schließen,Close fullscreen,,
+map.detail.plugin.fullscreen.close.button|tooltip,Vollbildansicht schließen,Close fullscreen,,Cerrar pantalla completa
 map.detail.plugin.fullscreen.open.button|icon,fa-arrows-alt,fa-arrows-alt,fa-arrows-alt,fa-arrows-alt
-map.detail.plugin.fullscreen.open.button|tooltip,Vollbildansicht öffnen,Open fullscreen,,
+map.detail.plugin.fullscreen.open.button|tooltip,Vollbildansicht öffnen,Open fullscreen,,Abrir pantalla completa
 map.detail.plugin.menu.button|icon,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v
 map.detail.plugin.menu.button|tooltip,Optionen,Options,Menu,Menú
-map.detail.plugin.zoom.reset.button|tooltip,Zoomlevel zurücksetzen,Reset,,
+map.detail.plugin.zoom.reset.button|tooltip,Zoomlevel zurücksetzen,Reset,,Reiniciar
 server.config.name.system.detail_map,Karten-Einstellungen,Map settings,,Mapa
 server.config.parameter.system.detail_map.enabled.label,Karte im Detail anzeigen,Show map in detail,,Mostrar mapa en el detalle
 server.config.parameter.system.detail_map.enabled.checkbox,Aktiviert,Enabled,,Habilitado
