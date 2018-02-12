@@ -123,7 +123,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				position: mapPosition.position
 				iconColor: mapPosition.iconColor
 				iconName: mapPosition.iconName
-				group: data.groupColor
+				group: data.group
 				cui_onClick: (event)	=>
 					marker = event.target
 					@__customLocationMarkerOnClick(marker, data)
