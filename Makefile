@@ -17,8 +17,7 @@ INSTALL_FILES = \
 	detail-map.config.yml
 
 COFFEE_FILES = \
-    src/webfrontend/MapDetailPlugin.coffee \
-    src/webfrontend/MapFullscreen.coffee
+    src/webfrontend/MapDetailPlugin.coffee
 
 SCSS_FILES = src/webfrontend/scss/main.scss
 

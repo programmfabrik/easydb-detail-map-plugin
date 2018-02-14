@@ -32,19 +32,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		markerOptions = assetMarkerOptions.concat(customLocationMarkerOptions)
 
 		@__menuButton = @__getMenuButton()
-		@__buttonsUpperRight = [@__getFullScreenButton()]
-		if @__menuButton
-			@__buttonsUpperRight.push(@__menuButton)
+		@__buttonsUpperRight = if @__menuButton then [@__menuButton] else []
 
 		@__map = @__buildMap(markerOptions)
-
-		@__mapFullscreen = new MapFullscreen(
-			map: @__map
-			menuButton: @__menuButton
-			onClose: =>
-				@__map.setButtonBar(@__buttonsUpperRight, "upper-right")
-				@__onCloseFullscreen()
-		)
 
 		@__mapDetailCenterListener = CUI.Events.listen
 			type: "map-detail-center"
@@ -59,11 +49,11 @@ class MapDetailPlugin extends DetailSidebarPlugin
 					else
 						@__initCenter = position
 
-		@__viewportResizeListener = CUI.Events.listen
-			type: "viewport-resize"
-			node: @_detailSidebar.mainPane
+		@__onFullscreenListener = CUI.Events.listen
+			type: "end-fill-screen"
+			node: @__map
 			call: =>
-				@__map?.resize()
+				@__onCloseFullscreen()
 
 	showDetail: ->
 		if not @__map
@@ -139,19 +129,12 @@ class MapDetailPlugin extends DetailSidebarPlugin
 					addToLocationsArray(customData)
 		return customLocationMarkerOptions
 
-	__getFullScreenButton: ->
-		loca_key: "map.detail.plugin.fullscreen.open.button"
-		group: "rightButtonbar"
-		onClick: =>
-			@__mapFullscreen.render()
-			@__fullscreenActive = true
-
 	__getMenuButton: ->
 		if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
 			new LocaButton
 				loca_key: "map.detail.plugin.menu.button"
 				icon_right: false
-				group: "rightButtonbar"
+				group: "upper-right"
 				menu:
 					items: @__getMenuItems()
 
@@ -235,9 +218,14 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		return divIcon
 
 	__assetMarkerOnClick: (marker) ->
-		if @__fullscreenActive
+		if @__map.getFillScreenState()
 			if @__markerSelected
 				@__setIconToMarker(@__markerSelected, MapDetailPlugin.smallIconSize)
+
+				if @__markerSelected == marker
+					@__markerSelected = null
+					return
+
 			@__setIconToMarker(marker, MapDetailPlugin.bigIconSize)
 			@__markerSelected = marker
 		else
@@ -263,8 +251,6 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		if @__markerSelected
 			@__setIconToMarker(@__markerSelected, MapDetailPlugin.smallIconSize)
 		@showDetail()
-		@__map.resize()
-		@__fullscreenActive = false
 
 	__setIconToMarker: (marker, size) ->
 		versions = marker.options.asset.value.versions
@@ -278,15 +264,15 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		@__mapFullscreen?.destroy()
 		delete @__map
 
-		@__mapDetailCenterListener.destroy()
-		@__viewportResizeListener.destroy()
+		@__mapDetailCenterListener?.destroy()
+		@__onFullscreenListener?.destroy()
 
 	__reload: ->
 		MapDetailPlugin.initMapbox()
 		@renderObject()
 		@showDetail()
 
-		if @__fullscreenActive
+		if @__map.getFillScreenState()
 			@__mapFullscreen.render()
 
 	__isCustomDataTypeLocationEnabled: ->
@@ -306,10 +292,6 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 ez5.session_ready =>
 	DetailSidebar.plugins.registerPlugin(MapDetailPlugin)
-
-	CUI.Map.defaults.zoomButtons.plus.tooltip = $$("map.detail.plugin.zoom.plus.button|tooltip")
-	CUI.Map.defaults.zoomButtons.reset.tooltip = $$("map.detail.plugin.zoom.reset.button|tooltip")
-	CUI.Map.defaults.zoomButtons.minus.tooltip = $$("map.detail.plugin.zoom.minus.button|tooltip")
 
 	if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
 		if not ez5.session.getPref("map").mapboxTileset
