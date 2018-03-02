@@ -293,6 +293,8 @@ class MapDetailPlugin extends DetailSidebarPlugin
 ez5.session_ready =>
 	DetailSidebar.plugins.registerPlugin(MapDetailPlugin)
 
+	ez5.session.addCookieOnlyPref("detail_sidebar_show_map", false)
+
 	if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
 		if not ez5.session.getPref("map").mapboxTileset
 			ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreets)
