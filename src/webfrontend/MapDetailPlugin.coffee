@@ -139,7 +139,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 					items: @__getMenuItems()
 
 	__getMenuItems: ->
-		currentTileset = ez5.session.getPref("map").mapboxTileset
+		currentTileset = ez5.session.getPref("mapboxTileset")
 
 		return [
 				new LocaLabel
@@ -149,14 +149,14 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				active: currentTileset == MapDetailPlugin.mapboxTilesetStreetsEnglish
 				disabled: currentTileset == MapDetailPlugin.mapboxTilesetSatellite
 				onClick: =>
-					ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreetsEnglish)
+					ez5.session.savePref("mapboxTileset", MapDetailPlugin.mapboxTilesetStreetsEnglish)
 					@__reload()
 			,
 				text: $$("map.detail.plugin.menu.language.local.label")
 				active: currentTileset == MapDetailPlugin.mapboxTilesetStreets || currentTileset == MapDetailPlugin.mapboxTilesetSatellite
 				onClick: =>
 					if currentTileset != MapDetailPlugin.mapboxTilesetSatellite
-						ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreets)
+						ez5.session.savePref("mapboxTileset", MapDetailPlugin.mapboxTilesetStreets)
 						@__reload()
 			,
 				new LocaLabel
@@ -165,13 +165,13 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				text: $$("map.detail.plugin.menu.tileset.street.label")
 				active: currentTileset == MapDetailPlugin.mapboxTilesetStreets || currentTileset == MapDetailPlugin.mapboxTilesetStreetsEnglish
 				onClick: =>
-					ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreets)
+					ez5.session.savePref("mapboxTileset", MapDetailPlugin.mapboxTilesetStreets)
 					@__reload()
 			,
 				text: $$("map.detail.plugin.menu.tileset.satellite.label")
 				active: currentTileset == MapDetailPlugin.mapboxTilesetSatellite
 				onClick: =>
-					ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetSatellite)
+					ez5.session.savePref("mapboxTileset", MapDetailPlugin.mapboxTilesetSatellite)
 					@__reload()
 		]
 
@@ -286,18 +286,15 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		mapboxAttribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
 
 		CUI.LeafletMap.defaults.tileLayerOptions.attribution = mapboxAttribution
-		CUI.LeafletMap.defaults.tileLayerOptions.id = ez5.session.getPref("map").mapboxTileset
+		CUI.LeafletMap.defaults.tileLayerOptions.id = ez5.session.getPref("mapboxTileset") or MapDetailPlugin.mapboxTilesetStreets
 		CUI.LeafletMap.defaults.tileLayerOptions.accessToken = MapDetailPlugin.getConfiguration().mapboxToken
 		CUI.LeafletMap.defaults.tileLayerUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
 
 ez5.session_ready =>
 	DetailSidebar.plugins.registerPlugin(MapDetailPlugin)
 
-	ez5.session.addCookieOnlyPref("detail_sidebar_show_map", false)
-
 	if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
-		if not ez5.session.getPref("map").mapboxTileset
-			ez5.session.savePref("map", mapboxTileset: MapDetailPlugin.mapboxTilesetStreets)
+		ez5.session.addCookieOnlyPref("mapboxTileset", MapDetailPlugin.mapboxTilesetStreets)
 
 		MapDetailPlugin.initMapbox()
 
