@@ -116,7 +116,8 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				group: data.group
 				cui_onClick: (event)	=>
 					marker = event.target
-					@__customLocationMarkerOnClick(marker, data)
+					markerIcon = event.originalEvent.target
+					@__customLocationMarkerOnClick(marker, markerIcon, data)
 			)
 
 		if @__isCustomDataTypeLocationEnabled()
@@ -218,7 +219,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		return divIcon
 
 	__assetMarkerOnClick: (marker) ->
-		if @__map.getFillScreenState()
+		if @__isFullscreen()
 			if @__markerSelected
 				@__setIconToMarker(@__markerSelected, MapDetailPlugin.smallIconSize)
 
@@ -238,12 +239,19 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			else
 				@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
 
-	__customLocationMarkerOnClick: (marker, data) ->
+	__customLocationMarkerOnClick: (marker, markerIcon, data) ->
 		if @__map.getZoom() == CUI.Map.defaults.maxZoom
+			info = data: data
+			if @__isFullscreen()
+				eventType = "location-marker-fullscreen-clicked"
+				info.icon = markerIcon
+			else
+				eventType = "location-marker-clicked"
+
 			CUI.Events.trigger
 				node: @_detailSidebar.container
-				type: "location-marker-clicked"
-				info: data
+				type: eventType
+				info: info
 		else
 			@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
 
@@ -255,13 +263,12 @@ class MapDetailPlugin extends DetailSidebarPlugin
 	__setIconToMarker: (marker, size) ->
 		versions = marker.options.asset.value.versions
 		imageVersion = if (size > 200 and versions.preview) then versions.preview else versions.small
-		bigIcon = @__getDivIcon(imageVersion, size)
-		marker.setIcon(bigIcon)
+		icon = @__getDivIcon(imageVersion, size)
+		marker.setIcon(icon)
 
 	__destroyMap: ->
 		@__isMapReady = false
 		@__map.destroy()
-		@__mapFullscreen?.destroy()
 		delete @__map
 
 		@__mapDetailCenterListener?.destroy()
@@ -272,12 +279,12 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		@renderObject()
 		@showDetail()
 
-		if @__map.getFillScreenState()
-			@__mapFullscreen.render()
-
 	__isCustomDataTypeLocationEnabled: ->
 		isUnknownCustomDataType = CustomDataType.get("custom:base.custom-data-type-location.location") instanceof CustomDataTypeUnknown
 		return not isUnknownCustomDataType
+
+	__isFullscreen: ->
+		return @__map.getFillScreenState()
 
 	@getConfiguration: ->
 		ez5.session.getBaseConfig().system["detail_map"] or {}
