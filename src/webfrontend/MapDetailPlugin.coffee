@@ -25,7 +25,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 	renderObject: ->
 		if @__map
-			@__destroyMap()
+			@destroy()
 
 		assetMarkerOptions = @__getAssetMarkerOptions()
 		customLocationMarkerOptions = @__getCustomLocationMarkerOptions()
@@ -266,14 +266,6 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		icon = @__getDivIcon(imageVersion, size)
 		marker.setIcon(icon)
 
-	__destroyMap: ->
-		@__isMapReady = false
-		@__map.destroy()
-		delete @__map
-
-		@__mapDetailCenterListener?.destroy()
-		@__onFullscreenListener?.destroy()
-
 	__reload: ->
 		MapDetailPlugin.initMapbox()
 		@renderObject()
@@ -286,6 +278,29 @@ class MapDetailPlugin extends DetailSidebarPlugin
 	__isFullscreen: ->
 		return @__map.getFillScreenState()
 
+	destroy: ->
+		@__map.destroy()
+		delete @__map
+		delete @__isMapReady
+
+		@__mapDetailCenterListener?.destroy()
+		delete @__mapDetailCenterListener
+
+		@__onFullscreenListener?.destroy()
+		delete @__onFullscreenListener
+
+		@__menuButton?.destroy()
+		delete @__menuButton
+
+		@__markerSelected?.destroy()
+		delete @__markerSelected
+
+		delete @__buttonsUpperRight
+		delete @__mapDetailCenterListener
+		delete @__initCenter
+		
+		super()
+
 	@getConfiguration: ->
 		ez5.session.getBaseConfig().system["detail_map"] or {}
 
@@ -297,7 +312,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		CUI.LeafletMap.defaults.tileLayerOptions.accessToken = MapDetailPlugin.getConfiguration().mapboxToken
 		CUI.LeafletMap.defaults.tileLayerUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
 
-ez5.session_ready =>
+ez5.session_ready ->
 	DetailSidebar.plugins.registerPlugin(MapDetailPlugin)
 
 	if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
