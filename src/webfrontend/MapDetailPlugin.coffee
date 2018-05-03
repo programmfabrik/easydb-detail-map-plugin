@@ -281,7 +281,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		return @__map.getFillScreenState()
 
 	destroy: ->
-		@__map.destroy()
+		@__map?.destroy()
 		delete @__map
 		delete @__isMapReady
 
