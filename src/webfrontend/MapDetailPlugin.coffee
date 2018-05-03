@@ -36,9 +36,10 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 		@__map = @__buildMap(markerOptions)
 
-		@__mapDetailCenterListener = CUI.Events.listen
+		CUI.Events.listen
 			type: "map-detail-center"
 			node: @_detailSidebar.container
+			instance: @
 			call: (_, position) =>
 				if CUI.Map.isValidPosition(position)
 					if not @getButton().isActive()
@@ -49,9 +50,10 @@ class MapDetailPlugin extends DetailSidebarPlugin
 					else
 						@__initCenter = position
 
-		@__onFullscreenListener = CUI.Events.listen
+		CUI.Events.listen
 			type: "end-fill-screen"
 			node: @__map
+			instance: @
 			call: =>
 				@__onCloseFullscreen()
 
@@ -283,12 +285,6 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		delete @__map
 		delete @__isMapReady
 
-		@__mapDetailCenterListener?.destroy()
-		delete @__mapDetailCenterListener
-
-		@__onFullscreenListener?.destroy()
-		delete @__onFullscreenListener
-
 		@__menuButton?.destroy()
 		delete @__menuButton
 
@@ -296,9 +292,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		delete @__markerSelected
 
 		delete @__buttonsUpperRight
-		delete @__mapDetailCenterListener
 		delete @__initCenter
-		
+
+		CUI.Events.ignore(instance: @)
 		super()
 
 	@getConfiguration: ->
