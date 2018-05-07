@@ -2,9 +2,15 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 	@bigIconSize: 320
 	@smallIconSize: 64
-	@mapboxTilesetStreets: "mapbox.streets"
-	@mapboxTilesetStreetsEnglish: "mapbox.run-bike-hike"
-	@mapboxTilesetSatellite: "mapbox.satellite"
+	@mapboxTilesetStreets:
+		name: "mapbox.streets"
+		maxZoom: 18
+	@mapboxTilesetStreetsEnglish:
+		name: "mapbox.run-bike-hike"
+		maxZoom: 18
+	@mapboxTilesetSatellite:
+		name: "mapbox.satellite"
+		maxZoom: 12
 
 	getButtonLocaKey: ->
 		"map.detail.plugin.button"
@@ -25,7 +31,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 	renderObject: ->
 		if @__map
-			@destroy()
+			@resetMap()
 
 		assetMarkerOptions = @__getAssetMarkerOptions()
 		customLocationMarkerOptions = @__getCustomLocationMarkerOptions()
@@ -87,6 +93,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			if not @__isAssetEnabledByCustomSetting(asset)
 				continue
 
+			if CUI.util.isEmpty(asset.value.versions)
+				continue
+
 			gps_location = asset.value.technical_metadata.gps_location
 			if gps_location and gps_location.latitude and gps_location.longitude
 				do(asset) =>
@@ -94,9 +103,12 @@ class MapDetailPlugin extends DetailSidebarPlugin
 						position:
 							lat: gps_location.latitude,
 							lng: gps_location.longitude
-						cui_onClick: (event)=>
+						cui_onClick: (event) =>
 							marker = event.target
 							@__assetMarkerOnClick(marker)
+						cui_onDoubleClick: (event) =>
+							marker = event.target
+							@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
 
 					if asset.value.versions.small
 						options.icon = @__getDivIcon(asset.value.versions.small, MapDetailPlugin.smallIconSize)
@@ -120,6 +132,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 					marker = event.target
 					markerIcon = event.originalEvent.target
 					@__customLocationMarkerOnClick(marker, markerIcon, data)
+				cui_onDoubleClick: (event) =>
+					marker = event.target
+					@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
 			)
 
 		if @__isCustomDataTypeLocationEnabled()
@@ -142,39 +157,39 @@ class MapDetailPlugin extends DetailSidebarPlugin
 					items: @__getMenuItems()
 
 	__getMenuItems: ->
-		currentTileset = ez5.session.getPref("mapboxTileset")
+		currentTilesetName = ez5.session.getPref("mapboxTilesetOptions").name
 
 		return [
 				new LocaLabel
 					loca_key: "map.detail.plugin.menu.language.label"
 			,
 				text: $$("map.detail.plugin.menu.language.english.label")
-				active: currentTileset == MapDetailPlugin.mapboxTilesetStreetsEnglish
-				disabled: currentTileset == MapDetailPlugin.mapboxTilesetSatellite
+				active: currentTilesetName == MapDetailPlugin.mapboxTilesetStreetsEnglish.name
+				disabled: currentTilesetName == MapDetailPlugin.mapboxTilesetSatellite.name
 				onClick: =>
-					ez5.session.savePref("mapboxTileset", MapDetailPlugin.mapboxTilesetStreetsEnglish)
+					ez5.session.savePref("mapboxTilesetOptions", MapDetailPlugin.mapboxTilesetStreetsEnglish)
 					@__reload()
 			,
 				text: $$("map.detail.plugin.menu.language.local.label")
-				active: currentTileset == MapDetailPlugin.mapboxTilesetStreets || currentTileset == MapDetailPlugin.mapboxTilesetSatellite
+				active: currentTilesetName == MapDetailPlugin.mapboxTilesetStreets.name || currentTilesetName == MapDetailPlugin.mapboxTilesetSatellite.name
 				onClick: =>
-					if currentTileset != MapDetailPlugin.mapboxTilesetSatellite
-						ez5.session.savePref("mapboxTileset", MapDetailPlugin.mapboxTilesetStreets)
+					if currentTilesetName != MapDetailPlugin.mapboxTilesetSatellite.name
+						ez5.session.savePref("mapboxTilesetOptions", MapDetailPlugin.mapboxTilesetStreets)
 						@__reload()
 			,
 				new LocaLabel
 					loca_key: "map.detail.plugin.menu.tileset.label"
 			,
 				text: $$("map.detail.plugin.menu.tileset.street.label")
-				active: currentTileset == MapDetailPlugin.mapboxTilesetStreets || currentTileset == MapDetailPlugin.mapboxTilesetStreetsEnglish
+				active: currentTilesetName == MapDetailPlugin.mapboxTilesetStreets.name || currentTilesetName == MapDetailPlugin.mapboxTilesetStreetsEnglish.name
 				onClick: =>
-					ez5.session.savePref("mapboxTileset", MapDetailPlugin.mapboxTilesetStreets)
+					ez5.session.savePref("mapboxTilesetOptions", MapDetailPlugin.mapboxTilesetStreets)
 					@__reload()
 			,
 				text: $$("map.detail.plugin.menu.tileset.satellite.label")
-				active: currentTileset == MapDetailPlugin.mapboxTilesetSatellite
+				active: currentTilesetName == MapDetailPlugin.mapboxTilesetSatellite.name
 				onClick: =>
-					ez5.session.savePref("mapboxTileset", MapDetailPlugin.mapboxTilesetSatellite)
+					ez5.session.savePref("mapboxTilesetOptions", MapDetailPlugin.mapboxTilesetSatellite)
 					@__reload()
 		]
 
@@ -222,6 +237,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 	__assetMarkerOnClick: (marker) ->
 		if @__isFullscreen()
+			# TODO: Show more asset information.
 			if @__markerSelected
 				@__setIconToMarker(@__markerSelected, MapDetailPlugin.smallIconSize)
 
@@ -232,30 +248,25 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			@__setIconToMarker(marker, MapDetailPlugin.bigIconSize)
 			@__markerSelected = marker
 		else
-			if @__map.getZoom() == CUI.Map.defaults.maxZoom
-				CUI.Events.trigger
-					node: @_detailSidebar.container
-					type: "asset-browser-show-asset"
-					info:
-						value: marker.options.asset.value
-			else
-				@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
-
-	__customLocationMarkerOnClick: (marker, markerIcon, data) ->
-		if @__map.getZoom() == CUI.Map.defaults.maxZoom
-			info = data: data
-			if @__isFullscreen()
-				eventType = "location-marker-fullscreen-clicked"
-				info.icon = markerIcon
-			else
-				eventType = "location-marker-clicked"
-
 			CUI.Events.trigger
 				node: @_detailSidebar.container
-				type: eventType
-				info: info
+				type: "asset-browser-show-asset"
+				info:
+					value: marker.options.asset.value
+
+
+	__customLocationMarkerOnClick: (marker, markerIcon, data) ->
+		info = data: data
+		if @__isFullscreen()
+			eventType = "location-marker-fullscreen-clicked"
+			info.icon = markerIcon
 		else
-			@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
+			eventType = "location-marker-clicked"
+
+		CUI.Events.trigger
+			node: @_detailSidebar.container
+			type: eventType
+			info: info
 
 	__onCloseFullscreen: ->
 		if @__markerSelected
@@ -280,7 +291,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 	__isFullscreen: ->
 		return @__map.getFillScreenState()
 
-	destroy: ->
+	resetMap: ->
 		@__map?.destroy()
 		delete @__map
 		delete @__isMapReady
@@ -288,14 +299,12 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		@__menuButton?.destroy()
 		delete @__menuButton
 
-		@__markerSelected?.destroy()
 		delete @__markerSelected
-
 		delete @__buttonsUpperRight
 		delete @__initCenter
 
 		CUI.Events.ignore(instance: @)
-		super()
+		return
 
 	@getConfiguration: ->
 		ez5.session.getBaseConfig().system["detail_map"] or {}
@@ -303,8 +312,11 @@ class MapDetailPlugin extends DetailSidebarPlugin
 	@initMapbox: ->
 		mapboxAttribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
 
+		mapboxTileset = ez5.session.getPref("mapboxTilesetOptions") or MapDetailPlugin.mapboxTilesetStreets
+		CUI.Map.defaults.maxZoom = mapboxTileset.maxZoom
+
 		CUI.LeafletMap.defaults.tileLayerOptions.attribution = mapboxAttribution
-		CUI.LeafletMap.defaults.tileLayerOptions.id = ez5.session.getPref("mapboxTileset") or MapDetailPlugin.mapboxTilesetStreets
+		CUI.LeafletMap.defaults.tileLayerOptions.id = mapboxTileset.name
 		CUI.LeafletMap.defaults.tileLayerOptions.accessToken = MapDetailPlugin.getConfiguration().mapboxToken
 		CUI.LeafletMap.defaults.tileLayerUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
 
@@ -312,7 +324,7 @@ ez5.session_ready ->
 	DetailSidebar.plugins.registerPlugin(MapDetailPlugin)
 
 	if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
-		ez5.session.addCookieOnlyPref("mapboxTileset", MapDetailPlugin.mapboxTilesetStreets)
+		ez5.session.addCookieOnlyPref("mapboxTilesetOptions", MapDetailPlugin.mapboxTilesetStreets)
 
 		MapDetailPlugin.initMapbox()
 
