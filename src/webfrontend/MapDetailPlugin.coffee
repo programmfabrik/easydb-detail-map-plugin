@@ -306,6 +306,10 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		CUI.Events.ignore(instance: @)
 		return
 
+	destroy: ->
+		@resetMap()
+		super()
+
 	@getConfiguration: ->
 		ez5.session.getBaseConfig().system["detail_map"] or {}
 
