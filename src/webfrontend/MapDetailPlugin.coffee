@@ -142,7 +142,8 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			for customData in customDataArray
 				if CUI.isArray(customData)
 					for data in customData
-						addToLocationsArray(data)
+						if data
+							addToLocationsArray(data)
 				else
 					addToLocationsArray(customData)
 		return customLocationMarkerOptions
