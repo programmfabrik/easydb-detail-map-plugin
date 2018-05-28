@@ -110,7 +110,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 							marker = event.target
 							@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
 
-					if asset.value.versions.small
+					if asset.value.versions.small and asset.value.versions.small.width > 0 and asset.value.versions.small.height > 0
 						options.icon = @__getDivIcon(asset.value.versions.small, MapDetailPlugin.smallIconSize)
 						options.asset = asset
 
