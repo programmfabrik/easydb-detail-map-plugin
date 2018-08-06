@@ -275,8 +275,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		@showDetail()
 
 	__setIconToMarker: (marker, size) ->
-		versions = marker.options.asset.value.versions
-		imageVersion = if (size > 200 and versions.preview) then versions.preview else versions.small
+		assetValue = marker.options.asset.value
+		versionName = Asset.getStandardVersionName(assetValue)
+		imageVersion = assetValue.versions[versionName]
 		icon = @__getDivIcon(imageVersion, size)
 		marker.setIcon(icon)
 
