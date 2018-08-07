@@ -19,12 +19,13 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		"detail_sidebar_show_map"
 
 	isAvailable: ->
-		return MapDetailPlugin.getConfiguration().enabled and @__areMarkersAvailable()
+		@__isAvailable = MapDetailPlugin.getConfiguration().enabled and @__areMarkersAvailable()
+		return @__isAvailable
 
 	isDisabled: ->
 		assetMarkerOptions = @__getAssetMarkerOptions()
-		customLocationMarkerOptions = @__getCustomLocationMarkerOptions()
-		return assetMarkerOptions.length == 0 and customLocationMarkerOptions.length == 0
+		isPluginSupportedByOtherFields = @_detailSidebar.object.isPluginSupported(@, "detail")
+		return assetMarkerOptions.length == 0 and not isPluginSupportedByOtherFields
 
 	hideDetail: ->
 		@_detailSidebar.mainPane.empty("top")
@@ -33,9 +34,8 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		if @__map
 			@resetMap()
 
-		assetMarkerOptions = @__getAssetMarkerOptions()
-		customLocationMarkerOptions = @__getCustomLocationMarkerOptions()
-		markerOptions = assetMarkerOptions.concat(customLocationMarkerOptions)
+		@__addLocationTriggered = false
+		markerOptions = @__getAssetMarkerOptions()
 
 		@__menuButton = @__getMenuButton()
 		@__buttonsUpperRight = if @__menuButton then [@__menuButton] else []
@@ -62,6 +62,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			instance: @
 			call: =>
 				@__onCloseFullscreen()
+		return
 
 	showDetail: ->
 		if not @__map
@@ -118,35 +119,22 @@ class MapDetailPlugin extends DetailSidebarPlugin
 
 		assetMarkerOptions
 
-	__getCustomLocationMarkerOptions: ->
-		customLocationMarkerOptions = []
+	__addMarker: (data) =>
+		location =
+			position: data.position
+			iconColor: data.iconColor
+			iconName: data.iconName
+			group: data.group
+			cui_onClick: (event)	=>
+				marker = event.target
+				markerIcon = event.originalEvent.target
+				@__customLocationMarkerOnClick(marker, markerIcon, data)
+			cui_onDoubleClick: (event) =>
+				marker = event.target
+				@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
 
-		addToLocationsArray = (data) =>
-			mapPosition = data.mapPosition
-			customLocationMarkerOptions.push(
-				position: mapPosition.position
-				iconColor: mapPosition.iconColor
-				iconName: mapPosition.iconName
-				group: data.group
-				cui_onClick: (event)	=>
-					marker = event.target
-					markerIcon = event.originalEvent.target
-					@__customLocationMarkerOnClick(marker, markerIcon, data)
-				cui_onDoubleClick: (event) =>
-					marker = event.target
-					@__map.setCenter(marker.getLatLng(), CUI.Map.defaults.maxZoom)
-			)
-
-		if @__isCustomDataTypeLocationEnabled()
-			customDataArray = @_detailSidebar.object.getCustomDataTypeFields("detail", CustomDataTypeLocation)
-			for customData in customDataArray
-				if CUI.isArray(customData)
-					for data in customData
-						if data
-							addToLocationsArray(data)
-				else
-					addToLocationsArray(customData)
-		return customLocationMarkerOptions
+		@__map.addMarker(location)
+		return
 
 	__getMenuButton: ->
 		if MapDetailPlugin.getConfiguration().tiles == "Mapbox"
@@ -195,13 +183,10 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		]
 
 	__areMarkersAvailable: ->
-		if @__isCustomDataTypeLocationEnabled()
-			positions = @_detailSidebar.object.getCustomDataTypeFields("detail", CustomDataTypeLocation)
-
 		assets = @_detailSidebar.object.getAssetsForBrowser("detail")
+		isPluginSupportedByOtherFields = @_detailSidebar.object.isPluginSupported(@, "detail")
 		isAvailableByAssets = assets and assets.length > 0 and @__existsAtLeastOneAssetEnabledByCustomSettings(assets)
-		isAvailableByCustomDataTypeLocations = positions && positions.length > 0
-		return isAvailableByAssets or isAvailableByCustomDataTypeLocations
+		return isAvailableByAssets or isPluginSupportedByOtherFields
 
 	__existsAtLeastOneAssetEnabledByCustomSettings: (assets) ->
 		for asset in assets
@@ -255,14 +240,13 @@ class MapDetailPlugin extends DetailSidebarPlugin
 				info:
 					value: marker.options.asset.value
 
-
 	__customLocationMarkerOnClick: (marker, markerIcon, data) ->
 		info = data: data
 		if @__isFullscreen()
-			eventType = "location-marker-fullscreen-clicked"
+			eventType = "map-detail-fullscreen-click-location"
 			info.icon = markerIcon
 		else
-			eventType = "location-marker-clicked"
+			eventType = "map-detail-click-location"
 
 		CUI.Events.trigger
 			node: @_detailSidebar.container
@@ -286,12 +270,16 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		@renderObject()
 		@showDetail()
 
-	__isCustomDataTypeLocationEnabled: ->
-		isUnknownCustomDataType = CustomDataType.get("custom:base.custom-data-type-location.location") instanceof CustomDataTypeUnknown
-		return not isUnknownCustomDataType
-
 	__isFullscreen: ->
 		return @__map.getFillScreenState()
+
+	addMarker: (data) ->
+		if CUI.isArray(data)
+			for _data in data
+				if _data
+					@__addMarker(_data)
+		else
+			@__addMarker(data)
 
 	resetMap: ->
 		@__map?.destroy()
@@ -335,6 +323,17 @@ ez5.session_ready ->
 		MapDetailPlugin.initMapbox()
 
 CUI.ready ->
+	# The map will be centered if this event is triggered.
 	CUI.Events.registerEvent
 		type: "map-detail-center"
+		sink: true
+
+	# This event will be triggered by the map if the location is clicked.
+	CUI.Events.registerEvent
+		type: "map-detail-click-location"
+		sink: true
+
+	# This event will be triggered by the map if the location is clicked in fullscreen mode.
+	CUI.Events.registerEvent
+		type: "map-detail-fullscreen-click-location"
 		sink: true
