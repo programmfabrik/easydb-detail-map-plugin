@@ -19,8 +19,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		"detail_sidebar_show_map"
 
 	isAvailable: ->
-		@__isAvailable = MapDetailPlugin.getConfiguration().enabled and @__areMarkersAvailable()
-		return @__isAvailable
+		return MapDetailPlugin.getConfiguration().enabled and @__areMarkersAvailable()
 
 	isDisabled: ->
 		assetMarkerOptions = @__getAssetMarkerOptions()
