@@ -119,6 +119,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		assetMarkerOptions
 
 	__addMarker: (data) =>
+		if not MapDetailPlugin.getConfiguration().enabled
+			return
+
 		location =
 			position: data.position
 			iconColor: data.iconColor
