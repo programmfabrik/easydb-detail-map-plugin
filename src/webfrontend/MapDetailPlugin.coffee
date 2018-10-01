@@ -224,6 +224,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		return divIcon
 
 	__assetMarkerOnClick: (marker) ->
+		if not marker.options.asset?.value
+			return
+
 		if @__isFullscreen()
 			# TODO: Show more asset information.
 			if @__markerSelected
