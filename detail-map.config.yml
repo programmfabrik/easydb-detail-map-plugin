@@ -4,11 +4,9 @@ plugin:
   server:
     api-version:
       require: 1
-  scss:
-    body:
-      - build/webfrontend/easydb-detail-map-plugin.scss
   webfrontend:
     url: easydb-detail-map-plugin.js
+    css: easydb-detail-map-plugin.css
     l10n: l10n/
     type_extension:
       mask:
