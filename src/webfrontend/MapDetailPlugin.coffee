@@ -96,7 +96,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 			if CUI.util.isEmpty(asset.value.versions)
 				continue
 
-			gps_location = asset.value.technical_metadata.gps_location
+			gps_location = asset.value.technical_metadata?.gps_location
 			if gps_location and gps_location.latitude and gps_location.longitude
 				do(asset) =>
 					options =
