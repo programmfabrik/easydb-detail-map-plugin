@@ -33,7 +33,6 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		if @__map
 			@resetMap()
 
-		@__addLocationTriggered = false
 		markerOptions = @__getAssetMarkerOptions()
 
 		@__menuButton = @__getMenuButton()
