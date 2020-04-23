@@ -12,6 +12,7 @@ plugin:
       mask:
         eas:
           - name: map
+            group: detail
             parameters:
               show_in_map:
                 type: bool
