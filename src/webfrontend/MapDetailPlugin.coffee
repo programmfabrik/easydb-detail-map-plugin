@@ -3,13 +3,13 @@ class MapDetailPlugin extends DetailSidebarPlugin
 	@bigIconSize: 320
 	@smallIconSize: 64
 	@mapboxTilesetStreets:
-		name: "mapbox.streets"
+		name: "mapbox/streets-v11"
 		maxZoom: 18
 	@mapboxTilesetStreetsEnglish:
-		name: "mapbox.run-bike-hike"
+		name: "mapbox/outdoors-v11"
 		maxZoom: 18
 	@mapboxTilesetSatellite:
-		name: "mapbox.satellite"
+		name: "mapbox/satellite-v9"
 		maxZoom: 12
 
 	getButtonLocaKey: ->
@@ -316,7 +316,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		CUI.LeafletMap.defaults.tileLayerOptions.attribution = mapboxAttribution
 		CUI.LeafletMap.defaults.tileLayerOptions.id = mapboxTileset.name
 		CUI.LeafletMap.defaults.tileLayerOptions.accessToken = MapDetailPlugin.getConfiguration().mapboxToken
-		CUI.LeafletMap.defaults.tileLayerUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
+		CUI.LeafletMap.defaults.tileLayerOptions.tileSize = 512
+		CUI.LeafletMap.defaults.tileLayerOptions.zoomOffset = -1
+		CUI.LeafletMap.defaults.tileLayerUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}'
 
 ez5.session_ready ->
 	DetailSidebar.plugins.registerPlugin(MapDetailPlugin)
