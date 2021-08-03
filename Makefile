@@ -13,7 +13,7 @@ INSTALL_FILES = \
 	$(WEB)/l10n/it-IT.json \
 	$(CSS) \
 	$(JS) \
-	detail-map.config.yml
+	manifest.yml
 
 COFFEE_FILES = \
     src/webfrontend/MapDetailPlugin.coffee
