@@ -210,9 +210,10 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		# dx and dy are the top left offset of the pointer end
 		iconAnchorOffsetX = Math.floor(iconWidth / 2)
 
+		imageUrl = Session.addToken(image.url)
 		divIcon = L.divIcon(
 			html: """<div class="ez5-map-marker">
-									<img class="ez5-map-marker-image" src="#{ image.url }" style="width: #{ width }px; height: #{ height }px">
+									<img class="ez5-map-marker-image" src="#{ imageUrl }" style="width: #{ width }px; height: #{ height }px">
 							 		<div class="ez5-map-marker-pointer"></div>
 							 </div>
 						"""
