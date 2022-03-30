@@ -306,7 +306,9 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		super()
 
 	@getConfiguration: ->
-		ez5.session.getBaseConfig().system["detail_map"] or {}
+		baseConfig = ez5.session.getBaseConfig()
+		baseConfig = baseConfig.system or baseConfig # TODO: Remove this after #64076 is merged.
+		return baseConfig["detail_map"] or {}
 
 	@initMapbox: ->
 		mapboxAttribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
