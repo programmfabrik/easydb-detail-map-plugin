@@ -306,7 +306,7 @@ class MapDetailPlugin extends DetailSidebarPlugin
 		super()
 
 	@getConfiguration: ->
-		baseConfig = ez5.session.getBaseConfig()
+		baseConfig = ez5.session.getBaseConfig("plugin", "easydb-detail-map-plugin")
 		baseConfig = baseConfig.system or baseConfig # TODO: Remove this after #64076 is merged.
 		return baseConfig["detail_map"] or {}
 
