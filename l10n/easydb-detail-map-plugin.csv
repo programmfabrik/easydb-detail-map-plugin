@@ -3,6 +3,8 @@ map.detail.plugin.button|icon,fa-map-o,fa-map-o,fa-map-o,fa-map-o
 map.detail.plugin.menu.button|icon,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v
 map.detail.plugin.menu.button|tooltip,Optionen,Options,Menu,Menú
 server.config.name.system.detail_map,Karten-Einstellungen,Map settings,,Mapa
+server.config.option.system.detail_map.tiles.OpenStreetMaps,OpenStreetMaps,OpenStreetMaps,OpenStreetMaps,OpenStreetMaps
+server.config.option.system.detail_map.tiles.Mapbox,Mapbox,Mapbox,Mapbox,Mapbox
 server.config.parameter.system.detail_map.enabled.label,Karte im Detail anzeigen,Show map in detail,,Mostrar mapa en el detalle
 server.config.parameter.system.detail_map.enabled.checkbox,Aktiviert,Enabled,,Habilitado
 server.config.parameter.system.detail_map.mapboxToken.label,Mapbox Token,Mapbox Token,Mapbox Token,Mapbox Token
