@@ -1,21 +1,21 @@
-key,de-DE,en-US,it-IT,es-ES
-map.detail.plugin.button|icon,fa-map-o,fa-map-o,fa-map-o,fa-map-o
-map.detail.plugin.menu.button|icon,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v
-map.detail.plugin.menu.button|tooltip,Optionen,Options,Menu,Menú
-server.config.name.system.detail_map,Karten-Einstellungen,Map settings,,Mapa
-server.config.option.system.detail_map.tiles.OpenStreetMaps,OpenStreetMaps,OpenStreetMaps,OpenStreetMaps,OpenStreetMaps
-server.config.option.system.detail_map.tiles.Mapbox,Mapbox,Mapbox,Mapbox,Mapbox
-server.config.parameter.system.detail_map.enabled.label,Karte im Detail anzeigen,Show map in detail,,Mostrar mapa en el detalle
-server.config.parameter.system.detail_map.enabled.checkbox,Aktiviert,Enabled,,Habilitado
-server.config.parameter.system.detail_map.mapboxToken.label,Mapbox Token,Mapbox Token,Mapbox Token,Mapbox Token
-server.config.parameter.system.detail_map.tiles.label,Anzeigen mit,Display with,Tiles,Tiles
-map.detail.plugin.menu.language.label,Sprache,Language,Language,Language
-map.detail.plugin.menu.language.english.label,Englisch,English,English,English
-map.detail.plugin.menu.language.local.label,Lokal,Local,Local,Local
-map.detail.plugin.menu.tileset.label,Ansicht,View,Tileset,Tileset
-map.detail.plugin.menu.tileset.street.label,Karte,Street,Street,Street
-map.detail.plugin.menu.tileset.satellite.label,Satellit,Satellite,Satellite,Satellite
-map.detail.plugin.menu.no.options.label,Keine Optionen,No options,No options,No options
-map.detail.plugin.button|tooltip,Kartenansicht,Map view,,Vista de mapa
-type.extension.custom.settings.config.parameter.base.map.show_in_map.label,Karte,Map,Map,Mapa
-type.extension.custom.settings.config.parameter.base.map.show_in_map.checkbox,In Karte anzeigen,Show in map,Show in map,Mostrar en mapa
+key,de-DE,en-US,da-DK,fi-FI,sv-SE,it-IT,es-ES
+map.detail.plugin.button|icon,fa-map-o,fa-map-o,fa-map-o,fa-map-o,fa-map-o,fa-map-o,fa-map-o
+map.detail.plugin.button|tooltip,Kartenansicht,Map view,Map view,Karttanäkymä,Map view,,Vista de mapa
+map.detail.plugin.menu.button|icon,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v
+map.detail.plugin.menu.button|tooltip,Optionen,Options,Options,Asetukset,Options,Menu,Menú
+map.detail.plugin.menu.language.english.label,Englisch,English,English,Englanti,English,English,English
+map.detail.plugin.menu.language.label,Sprache,Language,Language,Kieli,Language,Language,Language
+map.detail.plugin.menu.language.local.label,Lokal,Local,Local,Paikallinen,Local,Local,Local
+map.detail.plugin.menu.no.options.label,Keine Optionen,No options,No options,Ei asetuksia,No options,No options,No options
+map.detail.plugin.menu.tileset.label,Ansicht,View,View,Näkymä,View,Tileset,Tileset
+map.detail.plugin.menu.tileset.satellite.label,Satellit,Satellite,Satellite,Satelliitti,Satellite,Satellite,Satellite
+map.detail.plugin.menu.tileset.street.label,Karte,Street,Street,Katunäkymä,Street,Street,Street
+server.config.name.system.detail_map,Karten-Einstellungen,Map settings,Map settings,Kartta-asetukset,Map settings,,Mapa
+server.config.option.system.detail_map.tiles.Mapbox,Mapbox,Mapbox,Mapbox,Mapbox,Mapbox,Mapbox,Mapbox
+server.config.option.system.detail_map.tiles.OpenStreetMaps,OpenStreetMaps,OpenStreetMaps,OpenStreetMaps,OpenStreetMap,OpenStreetMaps,OpenStreetMaps,OpenStreetMaps
+server.config.parameter.system.detail_map.enabled.checkbox,Aktiviert,Enabled,Enabled,Käytössä,Enabled,,Habilitado
+server.config.parameter.system.detail_map.enabled.label,Karte im Detail anzeigen,Show map in detail,Show map in detail,Näytä yksityiskohtainen kartta,Show map in detail,,Mostrar mapa en el detalle
+server.config.parameter.system.detail_map.mapboxToken.label,Mapbox Token,Mapbox Token,Mapbox Token,Mapbox Token,Mapbox Token,Mapbox Token,Mapbox Token
+server.config.parameter.system.detail_map.tiles.label,Anzeigen mit,Display with,Display with,Näytä,Display with,Tiles,Tiles
+type.extension.custom.settings.config.parameter.base.map.show_in_map.checkbox,In Karte anzeigen,Show in map,Show in map,Näytä kartalla,Show in map,Show in map,Mostrar en mapa
+type.extension.custom.settings.config.parameter.base.map.show_in_map.label,Karte,Map,Map,Kartta,Map,Map,Mapa
