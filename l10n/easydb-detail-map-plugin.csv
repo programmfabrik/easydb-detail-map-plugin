@@ -19,3 +19,4 @@ server.config.parameter.system.detail_map.mapboxToken.label,Mapbox Token,Mapbox 
 server.config.parameter.system.detail_map.tiles.label,Anzeigen mit,Display with,Display with,Näytä,Display with,Tiles,Tiles
 type.extension.custom.settings.config.parameter.base.map.show_in_map.checkbox,In Karte anzeigen,Show in map,Show in map,Näytä kartalla,Show in map,Show in map,Mostrar en mapa
 type.extension.custom.settings.config.parameter.base.map.show_in_map.label,Karte,Map,Map,Kartta,Map,Map,Mapa
+server.config.group.system.plugin_easydb-detail-map-plugin.title,Karte,Map,Map,Map,Map,Map,Map
