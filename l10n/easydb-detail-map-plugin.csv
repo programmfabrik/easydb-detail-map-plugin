@@ -10,6 +10,7 @@ map.detail.plugin.menu.no.options.label,Keine Optionen,No options,No options,Ei 
 map.detail.plugin.menu.tileset.label,Ansicht,View,View,Näkymä,View,Tileset,Tileset
 map.detail.plugin.menu.tileset.satellite.label,Satellit,Satellite,Satellite,Satelliitti,Satellite,Satellite,Satellite
 map.detail.plugin.menu.tileset.street.label,Karte,Street,Street,Katunäkymä,Street,Street,Street
+server.config.group.system.plugin_easydb-detail-map-plugin.title,Karte,Map,Map,Kartta,Map,Map,Map
 server.config.name.system.detail_map,Karten-Einstellungen,Map settings,Map settings,Kartta-asetukset,Map settings,,Mapa
 server.config.option.system.detail_map.tiles.Mapbox,Mapbox,Mapbox,Mapbox,Mapbox,Mapbox,Mapbox,Mapbox
 server.config.option.system.detail_map.tiles.OpenStreetMaps,OpenStreetMaps,OpenStreetMaps,OpenStreetMaps,OpenStreetMap,OpenStreetMaps,OpenStreetMaps,OpenStreetMaps
@@ -19,4 +20,3 @@ server.config.parameter.system.detail_map.mapboxToken.label,Mapbox Token,Mapbox 
 server.config.parameter.system.detail_map.tiles.label,Anzeigen mit,Display with,Display with,Näytä,Display with,Tiles,Tiles
 type.extension.custom.settings.config.parameter.base.map.show_in_map.checkbox,In Karte anzeigen,Show in map,Show in map,Näytä kartalla,Show in map,Show in map,Mostrar en mapa
 type.extension.custom.settings.config.parameter.base.map.show_in_map.label,Karte,Map,Map,Kartta,Map,Map,Mapa
-server.config.group.system.plugin_easydb-detail-map-plugin.title,Karte,Map,Map,Map,Map,Map,Map
