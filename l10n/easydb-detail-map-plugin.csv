@@ -1,22 +1,22 @@
-key,de-DE,en-US,da-DK,fi-FI,sv-SE,it-IT,es-ES
-map.detail.plugin.button|icon,fa-map-o,fa-map-o,fa-map-o,fa-map-o,fa-map-o,fa-map-o,fa-map-o
-map.detail.plugin.button|tooltip,Kartenansicht,Map view,Map view,Karttanäkymä,Kartvy,,Vista de mapa
-map.detail.plugin.menu.button|icon,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v,fa-ellipsis-v
-map.detail.plugin.menu.button|tooltip,Optionen,Options,Options,Asetukset,Alternativ,Menu,Menú
-map.detail.plugin.menu.language.english.label,Englisch,English,English,Englanti,Engelska,English,English
-map.detail.plugin.menu.language.label,Sprache,Language,Language,Kieli,Språk,Language,Language
-map.detail.plugin.menu.language.local.label,Lokal,Local,Local,Paikallinen,Lokal,Local,Local
-map.detail.plugin.menu.no.options.label,Keine Optionen,No options,No options,Ei asetuksia,Inga alternativ,No options,No options
-map.detail.plugin.menu.tileset.label,Ansicht,View,View,Näkymä,Vy,Tileset,Tileset
-map.detail.plugin.menu.tileset.satellite.label,Satellit,Satellite,Satellite,Satelliitti,Satellit,Satellite,Satellite
-map.detail.plugin.menu.tileset.street.label,Karte,Street,Street,Katunäkymä,Gata,Street,Street
-server.config.group.system.plugin_easydb-detail-map-plugin.title,Karte,Map,Map,Kartta,Karta,Map,Map
-server.config.name.system.detail_map,Karten-Einstellungen,Map settings,Map settings,Kartta-asetukset,Kartinställningar,,Mapa
-server.config.option.system.detail_map.tiles.Mapbox,Mapbox,Mapbox,Mapbox,Mapbox,Mapbox,Mapbox,Mapbox
-server.config.option.system.detail_map.tiles.OpenStreetMaps,OpenStreetMaps,OpenStreetMaps,OpenStreetMaps,OpenStreetMap,OpenStreetMaps,OpenStreetMaps,OpenStreetMaps
-server.config.parameter.system.detail_map.enabled.checkbox,Aktiviert,Enabled,Enabled,Käytössä,Aktiverad,,Habilitado
-server.config.parameter.system.detail_map.enabled.label,Karte im Detail anzeigen,Show map in detail,Show map in detail,Näytä yksityiskohtainen kartta,Visa kartan i detaljvy,,Mostrar mapa en el detalle
-server.config.parameter.system.detail_map.mapboxToken.label,Mapbox Token,Mapbox Token,Mapbox Token,Mapbox Token,Mapbox Token,Mapbox Token,Mapbox Token
-server.config.parameter.system.detail_map.tiles.label,Anzeigen mit,Display with,Display with,Näytä,Visa med,Tiles,Tiles
-type.extension.custom.settings.config.parameter.base.map.show_in_map.checkbox,In Karte anzeigen,Show in map,Show in map,Näytä kartalla,Visa på karta,Show in map,Mostrar en mapa
-type.extension.custom.settings.config.parameter.base.map.show_in_map.label,Karte,Map,Map,Kartta,Karta,Map,Mapa
+key,de-DE,R,en-US,R,da-DK,R,fi-FI,R,sv-SE,R,fr-FR,R,it-IT,R,es-ES,R
+map.detail.plugin.button|icon,fa-map-o,FALSE,fa-map-o,FALSE,fa-map-o,FALSE,fa-map-o,FALSE,fa-map-o,FALSE,,FALSE,fa-map-o,FALSE,fa-map-o,FALSE
+map.detail.plugin.button|tooltip,Kartenansicht,FALSE,Map view,FALSE,Map view,FALSE,Karttanäkymä,FALSE,Kartvy,FALSE,,FALSE,,FALSE,Vista de mapa,FALSE
+map.detail.plugin.menu.button|icon,fa-ellipsis-v,FALSE,fa-ellipsis-v,FALSE,fa-ellipsis-v,FALSE,fa-ellipsis-v,FALSE,fa-ellipsis-v,FALSE,,FALSE,fa-ellipsis-v,FALSE,fa-ellipsis-v,FALSE
+map.detail.plugin.menu.button|tooltip,Optionen,FALSE,Options,FALSE,Options,FALSE,Asetukset,FALSE,Alternativ,FALSE,,FALSE,Menu,FALSE,Menú,FALSE
+map.detail.plugin.menu.language.english.label,Englisch,FALSE,English,FALSE,English,FALSE,Englanti,FALSE,Engelska,FALSE,,FALSE,English,FALSE,English,FALSE
+map.detail.plugin.menu.language.label,Sprache,FALSE,Language,FALSE,Language,FALSE,Kieli,FALSE,Språk,FALSE,,FALSE,Language,FALSE,Language,FALSE
+map.detail.plugin.menu.language.local.label,Lokal,FALSE,Local,FALSE,Local,FALSE,Paikallinen,FALSE,Lokal,FALSE,,FALSE,Local,FALSE,Local,FALSE
+map.detail.plugin.menu.no.options.label,Keine Optionen,FALSE,No options,FALSE,No options,FALSE,Ei asetuksia,FALSE,Inga alternativ,FALSE,,FALSE,No options,FALSE,No options,FALSE
+map.detail.plugin.menu.tileset.label,Ansicht,FALSE,View,FALSE,View,FALSE,Näkymä,FALSE,Vy,FALSE,,FALSE,Tileset,FALSE,Tileset,FALSE
+map.detail.plugin.menu.tileset.satellite.label,Satellit,FALSE,Satellite,FALSE,Satellite,FALSE,Satelliitti,FALSE,Satellit,FALSE,,FALSE,Satellite,FALSE,Satellite,FALSE
+map.detail.plugin.menu.tileset.street.label,Karte,FALSE,Street,FALSE,Street,FALSE,Katunäkymä,FALSE,Gata,FALSE,,FALSE,Street,FALSE,Street,FALSE
+server.config.group.system.plugin_easydb-detail-map-plugin.title,Karte,FALSE,Map,FALSE,Map,FALSE,Kartta,FALSE,Karta,FALSE,,FALSE,Map,FALSE,Map,FALSE
+server.config.name.system.detail_map,Karten-Einstellungen,FALSE,Map settings,FALSE,Map settings,FALSE,Kartta-asetukset,FALSE,Kartinställningar,FALSE,,FALSE,,FALSE,Mapa,FALSE
+server.config.option.system.detail_map.tiles.Mapbox,Mapbox,FALSE,Mapbox,FALSE,Mapbox,FALSE,Mapbox,FALSE,Mapbox,FALSE,,FALSE,Mapbox,FALSE,Mapbox,FALSE
+server.config.option.system.detail_map.tiles.OpenStreetMaps,OpenStreetMaps,FALSE,OpenStreetMaps,FALSE,OpenStreetMaps,FALSE,OpenStreetMap,FALSE,OpenStreetMaps,FALSE,,FALSE,OpenStreetMaps,FALSE,OpenStreetMaps,FALSE
+server.config.parameter.system.detail_map.enabled.checkbox,Aktiviert,FALSE,Enabled,FALSE,Enabled,FALSE,Käytössä,FALSE,Aktiverad,FALSE,,FALSE,,FALSE,Habilitado,FALSE
+server.config.parameter.system.detail_map.enabled.label,Karte im Detail anzeigen,FALSE,Show map in detail,FALSE,Show map in detail,FALSE,Näytä yksityiskohtainen kartta,FALSE,Visa kartan i detaljvy,FALSE,,FALSE,,FALSE,Mostrar mapa en el detalle,FALSE
+server.config.parameter.system.detail_map.mapboxToken.label,Mapbox Token,FALSE,Mapbox Token,FALSE,Mapbox Token,FALSE,Mapbox Token,FALSE,Mapbox Token,FALSE,,FALSE,Mapbox Token,FALSE,Mapbox Token,FALSE
+server.config.parameter.system.detail_map.tiles.label,Anzeigen mit,FALSE,Display with,FALSE,Display with,FALSE,Näytä,FALSE,Visa med,FALSE,,FALSE,Tiles,FALSE,Tiles,FALSE
+type.extension.custom.settings.config.parameter.base.map.show_in_map.checkbox,In Karte anzeigen,FALSE,Show in map,FALSE,Show in map,FALSE,Näytä kartalla,FALSE,Visa på karta,FALSE,,FALSE,Show in map,FALSE,Mostrar en mapa,FALSE
+type.extension.custom.settings.config.parameter.base.map.show_in_map.label,Karte,FALSE,Map,FALSE,Map,FALSE,Kartta,FALSE,Karta,FALSE,,FALSE,Map,FALSE,Mapa,FALSE
