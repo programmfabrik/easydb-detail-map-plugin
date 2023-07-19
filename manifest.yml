@@ -1,5 +1,8 @@
 plugin:
   name: easydb-detail-map-plugin
+  displayname:
+    en-US: "Detail Map Plugin"
+    de-DE: "Detail Map Plugin"
   version: 1.0
   server:
     api-version:
