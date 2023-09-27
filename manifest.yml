@@ -1,5 +1,6 @@
 plugin:
   name: easydb-detail-map-plugin
+  url: https://github.com/programmfabrik/easydb-detail-map-plugin
   displayname:
     en-US: "Detail Map Plugin"
     de-DE: "Detail Map Plugin"
