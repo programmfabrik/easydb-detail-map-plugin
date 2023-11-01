@@ -20,3 +20,11 @@ server.config.parameter.system.detail_map.mapboxToken.label,Mapbox Token,FALSE,M
 server.config.parameter.system.detail_map.tiles.label,Anzeigen mit,FALSE,Display with,FALSE,Display with,FALSE,Näytä,FALSE,Visa med,FALSE,,FALSE,Tiles,FALSE,Tiles,FALSE
 type.extension.custom.settings.config.parameter.base.map.show_in_map.checkbox,In Karte anzeigen,FALSE,Show in map,FALSE,Show in map,FALSE,Näytä kartalla,FALSE,Visa på karta,FALSE,,FALSE,Show in map,FALSE,Mostrar en mapa,FALSE
 type.extension.custom.settings.config.parameter.base.map.show_in_map.label,Karte,FALSE,Map,FALSE,Map,FALSE,Kartta,FALSE,Karta,FALSE,,FALSE,Map,FALSE,Mapa,FALSE
+,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
