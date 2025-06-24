@@ -1,6 +1,6 @@
 key,de-DE,R,en-US,R,da-DK,R,fi-FI,R,sv-SE,R,fr-FR,R,it-IT,R,es-ES,R
 map.detail.plugin.button|icon,fa-map-o,FALSE,fa-map-o,FALSE,fa-map-o,FALSE,fa-map-o,FALSE,fa-map-o,FALSE,fa-map-o,FALSE,fa-map-o,FALSE,fa-map-o,FALSE
-map.detail.plugin.button|tooltip,Kartenansicht,FALSE,Map view,FALSE,Map view,FALSE,Karttanäkymä,FALSE,Kartvy,FALSE,Vue de la carte,FALSE,,FALSE,Vista de mapa,FALSE
+map.detail.plugin.button|tooltip,Kartenansicht,FALSE,Map view,FALSE,Map view,FALSE,Karttanäkymä,FALSE,Kartvy,FALSE,Vue Carte,FALSE,,FALSE,Vista de mapa,FALSE
 map.detail.plugin.menu.button|icon,fa-ellipsis-v,FALSE,fa-ellipsis-v,FALSE,fa-ellipsis-v,FALSE,fa-ellipsis-v,FALSE,fa-ellipsis-v,FALSE,fa-ellipsis-v,FALSE,fa-ellipsis-v,FALSE,fa-ellipsis-v,FALSE
 map.detail.plugin.menu.button|tooltip,Optionen,FALSE,Options,FALSE,Options,FALSE,Asetukset,FALSE,Alternativ,FALSE,Options,FALSE,Menu,FALSE,Menú,FALSE
 map.detail.plugin.menu.language.english.label,Englisch,FALSE,English,FALSE,English,FALSE,Englanti,FALSE,Engelska,FALSE,Anglais,FALSE,English,FALSE,English,FALSE
@@ -13,7 +13,7 @@ map.detail.plugin.menu.tileset.street.label,Karte,FALSE,Street,FALSE,Street,FALS
 server.config.group.system.plugin_easydb-detail-map-plugin.title,Karte,FALSE,Map,FALSE,Map,FALSE,Kartta,FALSE,Karta,FALSE,Carte,FALSE,Map,FALSE,Map,FALSE
 server.config.name.system.detail_map,Karten-Einstellungen,FALSE,Map settings,FALSE,Map settings,FALSE,Kartta-asetukset,FALSE,Kartinställningar,FALSE,Paramètres de la carte,FALSE,,FALSE,Mapa,FALSE
 server.config.option.system.detail_map.tiles.Mapbox,Mapbox,FALSE,Mapbox,FALSE,Mapbox,FALSE,Mapbox,FALSE,Mapbox,FALSE,Mapbox,FALSE,Mapbox,FALSE,Mapbox,FALSE
-server.config.option.system.detail_map.tiles.OpenStreetMaps,OpenStreetMaps,FALSE,OpenStreetMaps,FALSE,OpenStreetMaps,FALSE,OpenStreetMap,FALSE,OpenStreetMaps,FALSE,OuvrirStreetMaps,FALSE,OpenStreetMaps,FALSE,OpenStreetMaps,FALSE
+server.config.option.system.detail_map.tiles.OpenStreetMaps,OpenStreetMaps,FALSE,OpenStreetMaps,FALSE,OpenStreetMaps,FALSE,OpenStreetMap,FALSE,OpenStreetMaps,FALSE,OpenStreetMaps,FALSE,OpenStreetMaps,FALSE,OpenStreetMaps,FALSE
 server.config.parameter.system.detail_map.enabled.checkbox,Aktiviert,FALSE,Enabled,FALSE,Enabled,FALSE,Käytössä,FALSE,Aktiverad,FALSE,Activé,FALSE,,FALSE,Habilitado,FALSE
 server.config.parameter.system.detail_map.enabled.label,Karte im Detail anzeigen,FALSE,Show map in detail,FALSE,Show map in detail,FALSE,Näytä yksityiskohtainen kartta,FALSE,Visa kartan i detaljvy,FALSE,Afficher la carte en détail,FALSE,,FALSE,Mostrar mapa en el detalle,FALSE
 server.config.parameter.system.detail_map.mapboxToken.label,Mapbox Token,FALSE,Mapbox Token,FALSE,Mapbox Token,FALSE,Mapbox Token,FALSE,Mapbox Token,FALSE,Mapbox Token,FALSE,Mapbox Token,FALSE,Mapbox Token,FALSE
