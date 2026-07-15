@@ -4,6 +4,17 @@ plugin:
   displayname:
     en-US: "Detail Map Plugin"
     de-DE: "Detail Map Plugin"
+  info:
+    de-DE: |
+      Zeigt die Dateien eines Datensatzes in der Detailansicht auf einer Karte an, sodass georeferenzierte Medien an ihrem Aufnahmeort verortet werden. Über eine Feldoption lässt sich steuern, ob eine Datei auf der Karte erscheint, und die Basiskonfiguration bestimmt den Kartenanbieter.
+
+      - Zeigt Dateipositionen auf einer Karte in der Detailansicht
+      - Wahl zwischen [OpenStreetMap](https://www.openstreetmap.org)- oder [Mapbox](https://www.mapbox.com)-Kacheln
+    en-US: |
+      Shows a record's files on a map in the detail view, so geolocated media can be placed on their capture location. A per-field option controls whether a file appears on the map, and the base configuration lets you choose the tile provider.
+
+      - Displays file locations on a map in the detail view
+      - Choose [OpenStreetMap](https://www.openstreetmap.org) or [Mapbox](https://www.mapbox.com) tiles
   version: 1.0
   server:
     api-version:
